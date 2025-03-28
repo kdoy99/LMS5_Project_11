@@ -47,10 +47,10 @@ namespace Project_11.ViewModel.Helpers
             return cities;
         }
 
-        public static async Task<List<CurrentConditions>> GetCurrentConditions (string citikey)
+        public static async Task<CurrentConditions> GetCurrentConditions (string citikey)
         {
             // API Json 결과에서 CurrentConditions 객체 타입 데이터를 List에 담습니다.
-            List<CurrentConditions> currnetConditions = new List<CurrentConditions>();
+            CurrentConditions currnetConditions = new CurrentConditions();
 
             // API 요청 URL을 설정합니다.
             string url = BASE_URL + string.Format(CURRENT_CONDITIONS_ENDPOINT, citikey, API_KEY, LANGUAGE);
@@ -61,7 +61,7 @@ namespace Project_11.ViewModel.Helpers
                 // url로 API 요청을 request 하고, response 값을 CurrentConditions 리스트에 할당합니다.
                 var res = await clnt.GetAsync(url);
                 string json = await res.Content.ReadAsStringAsync();
-                currnetConditions = JsonConvert.DeserializeObject<List<CurrentConditions>>(json);
+                currnetConditions = JsonConvert.DeserializeObject<List<CurrentConditions>>(json).FirstOrDefault();
             }
 
             return currnetConditions;

@@ -73,8 +73,19 @@ namespace Project_11.ViewModel
                 selectedcity = value;
                 // OnPropertyChanged 함수에서
                 OnPropertyChanged(nameof(selectedcity));
+
+                GetCurrentCondition();
             }
         }
+
+        private async void GetCurrentCondition()
+        {
+            Query = string.Empty;
+            Cities.Clear();
+            CurrentConditions = await AccuWeatherHelper.GetCurrentConditions(SelectedCity.Key);
+        }
+
+
         // [1] 시나리오: CurrentConditions 현재 날씨 정보가 업데이트 된다.
         private CurrentConditions currentCondition;
 
@@ -86,7 +97,7 @@ namespace Project_11.ViewModel
             {
                 currentCondition = value;
                 // OnPropertyChanged 함수에서
-                OnPropertyChanged(nameof(Query));
+                OnPropertyChanged(nameof(CurrentConditions));
             }
         }
 
@@ -94,6 +105,13 @@ namespace Project_11.ViewModel
         public async Task MakeQueryAsync()
         {
             var cities = await AccuWeatherHelper.GetCities(Query);
+
+            Cities.Clear();
+            foreach (City city in cities)
+            {
+                if (city != null)
+                    Cities.Add(city);
+            }
         }
 
         // [4] 이벤트 핸들러가 동작하면,
