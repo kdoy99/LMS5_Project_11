@@ -5,12 +5,12 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Project_11.Model;
+using Project_11_Example.Model;
 
 // curl -X GET "http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=pqp8VGmuTh0bAZPupUMy6XAe8aPTCkAF&q=%EA%B4%91%EC%A3%BC&language=ko-kr"
 // curl -X GET "http://dataservice.accuweather.com/currentconditions/v1/223627?apikey=pqp8VGmuTh0bAZPupUMy6XAe8aPTCkAF&language=ko-kr"
 
-namespace Project_11.ViewModel.Helpers
+namespace Project_11_Example.ViewModel.Helpers
 {
     class AccuWeatherHelper
     {

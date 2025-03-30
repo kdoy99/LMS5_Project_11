@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Project_11.ViewModel.Command
+namespace Project_11_Example.ViewModel.Command
 {
     public class SearchCommand : ICommand
     {

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Project_11.View
+namespace Project_11_Example.View
 {
     /// <summary>
     /// WeatherWindow.xaml에 대한 상호 작용 논리

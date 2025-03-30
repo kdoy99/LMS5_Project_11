@@ -5,11 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Project_11.Model;
-using Project_11.ViewModel.Command;
-using Project_11.ViewModel.Helpers;
+using Project_11_Example.Model;
+using Project_11_Example.ViewModel.Command;
+using Project_11_Example.ViewModel.Helpers;
 
-namespace Project_11.ViewModel
+namespace Project_11_Example.ViewModel
 {
     public class WeatherVM : INotifyPropertyChanged
     {

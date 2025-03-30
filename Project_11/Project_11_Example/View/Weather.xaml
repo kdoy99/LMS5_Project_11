@@ -1,11 +1,11 @@
-﻿<Window x:Class="Project_11.View.Weather"
+﻿<Window x:Class="Project_11_Example_Example.View.Weather"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Project_11.View"
+        xmlns:local="clr-namespace:Project_11_Example.View"
         mc:Ignorable="d"
-        xmlns:vm="clr-namespace:Project_11.ViewModel"
+        xmlns:vm="clr-namespace:Project_11_Example.ViewModel"
         Title="Weather" Height="600" Width="400">
 
     <Window.Resources>
