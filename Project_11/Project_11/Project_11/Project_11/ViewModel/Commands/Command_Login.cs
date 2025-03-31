@@ -8,11 +8,11 @@ using Project_11.View;
 
 namespace Project_11.ViewModel.Commands
 {
-    public class Command : ICommand
+    public class Command_Login : ICommand
     {
         private Action<string> _execute;
 
-        public Command(Action<string> ViewModel_Method)
+        public Command_Login(Action<string> ViewModel_Method)
         {
             _execute = ViewModel_Method;
         }

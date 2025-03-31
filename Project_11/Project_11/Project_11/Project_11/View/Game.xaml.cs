@@ -11,26 +11,22 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Project_11.ViewModel;
 
 namespace Project_11.View
 {
     /// <summary>
-    /// Start.xaml에 대한 상호 작용 논리
+    /// Server.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class Start : Window
+    public partial class Game : Window
     {
-        public Start()
+        public Game()
         {
             InitializeComponent();
         }
 
-        private void pwBox_PasswordChanged(object sender, RoutedEventArgs e)
+        public void DisplayMessage(string textbox_input)
         {
-            if (DataContext is ViewModel_Base viewmodel)
-            {
-                viewmodel.UserAccount.Password = pwBox.Password;
-            }
+            MessageBox.Show(textbox_input);
         }
     }
 }

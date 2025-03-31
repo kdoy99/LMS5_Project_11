@@ -16,20 +16,22 @@ using Project_11.ViewModel;
 namespace Project_11.View
 {
     /// <summary>
-    /// NewAccount.xaml에 대한 상호 작용 논리
+    /// SignUp.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class NewAccount : Window
+    public partial class SignUp : Window
     {
-        public NewAccount()
+        ViewModel_SignUp _SignUp = new ViewModel_SignUp();
+
+        public SignUp()
         {
             InitializeComponent();
         }
 
         private void pwBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (DataContext is ViewModel_Base viewmodel)
+            if (DataContext is ViewModel_SignUp viewmodel)
             {
-                viewmodel.UserAccount.Password = pwBox.Password;
+                _SignUp.account.Password = pwBox_New.Password;
             }
         }
     }
