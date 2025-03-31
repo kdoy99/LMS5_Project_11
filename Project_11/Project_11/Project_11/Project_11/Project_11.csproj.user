@@ -2,7 +2,10 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="View\Server.xaml.cs">
+    <Compile Update="View\Client.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\NewAccount.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\Start.xaml.cs">

@@ -8,7 +8,7 @@ using Project_11.View;
 
 namespace Project_11.ViewModel.Commands
 {
-    class Command : ICommand
+    public class Command : ICommand
     {
         private Action<string> _execute;
 

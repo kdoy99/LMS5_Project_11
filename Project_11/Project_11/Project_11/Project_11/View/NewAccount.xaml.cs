@@ -16,11 +16,11 @@ using Project_11.ViewModel;
 namespace Project_11.View
 {
     /// <summary>
-    /// Start.xaml에 대한 상호 작용 논리
+    /// NewAccount.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class Start : Window
+    public partial class NewAccount : Window
     {
-        public Start()
+        public NewAccount()
         {
             InitializeComponent();
         }

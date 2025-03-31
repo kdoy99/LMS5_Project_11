@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:Project_11.ViewModel"
         
-        Title="Start" Height="450" Width="600">
+        Title="도셀로" Height="450" Width="600">
 
     <Window.DataContext>
-        <vm:ViewModel/>
+        <vm:ViewModel_Base/>
     </Window.DataContext>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -41,7 +42,7 @@
 
         <Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,10,10,10">
             <TextBox x:Name="idBox"
-                     Text="{Binding password}"
+                     Text="{Binding UserAccount.ID, UpdateSourceTrigger=PropertyChanged}"
                      BorderBrush="Black" 
                      BorderThickness="2" 
                      FontSize="24" 
@@ -54,7 +55,8 @@
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="pwBox" 
+            <PasswordBox x:Name="pwBox"
+                     PasswordChanged="pwBox_PasswordChanged"
                      BorderBrush="Black" 
                      BorderThickness="2"
                      FontSize="24"
@@ -63,14 +65,13 @@
         </Grid>
 
         <Grid Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Command="{Binding cmd}"
-                    CommandParameter="{Binding ElementName=idBox ,
-                                               Path=Text}"
+            <Button Command="{Binding LoginCommand}"
                     Content="로그인" 
                     BorderBrush="Black" 
                     BorderThickness="2" 
                     Background="LightBlue" 
-                    FontSize="30"/>
+                    FontSize="30">
+            </Button>
         </Grid>
 
         <Grid Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Margin="10,10,10,10">

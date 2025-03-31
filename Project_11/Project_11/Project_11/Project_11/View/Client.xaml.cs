@@ -17,9 +17,9 @@ namespace Project_11.View
     /// <summary>
     /// Server.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class Server : Window
+    public partial class Client : Window
     {
-        public Server()
+        public Client()
         {
             InitializeComponent();
         }
