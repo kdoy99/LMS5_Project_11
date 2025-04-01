@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,21 +13,32 @@ using Project_11.ViewModel.Commands;
 namespace Project_11.ViewModel
 {
     // 회원가입 서버 연결 클래스
-    public class ViewModel_SignUp
+    public class ViewModel_SignUp : INotifyPropertyChanged
     {
         private string address = "127.0.0.1";
         private int port = 5457;
-
-        public Command_SignUp newCommand { get; set; }
-        public Account account { get; set; }
+        public Command_SignUp Command_SignUp { get; set; }
+        private Account _acccount;
+        public Account account
+        {
+            get {  return _acccount; }
+            set
+            {
+                _acccount = value;
+                OnPropertyChanged(nameof(Account));
+            }
+        }
 
         public ViewModel_SignUp()
         {
-            newCommand = new Command_SignUp(ConnectToServer);
+            Command_SignUp = new Command_SignUp(ConnectToServer);
             account = new Account();
         }
-
-        public async Task ConnectToServer(string message)
+        public void DisplayMessage_New(string message)
+        {
+            MessageBox.Show(message);
+        }
+        public async Task ConnectToServer(string message)   
         {
             try
             {
@@ -53,9 +65,10 @@ namespace Project_11.ViewModel
             }
         }
 
-        public void DisplayMessage_New(string message)
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
         {
-            MessageBox.Show(message);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

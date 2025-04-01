@@ -20,8 +20,6 @@ namespace Project_11.View
     /// </summary>
     public partial class SignUp : Window
     {
-        ViewModel_SignUp _SignUp = new ViewModel_SignUp();
-
         public SignUp()
         {
             InitializeComponent();
@@ -31,7 +29,7 @@ namespace Project_11.View
         {
             if (DataContext is ViewModel_SignUp viewmodel)
             {
-                _SignUp.account.Password = pwBox_New.Password;
+                viewmodel.account.Password = pwBox_New.Password;
             }
         }
     }

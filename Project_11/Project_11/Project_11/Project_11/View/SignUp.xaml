@@ -54,10 +54,6 @@
                  />
         </Grid>
 
-        <Grid Grid.Row="2" Grid.Column="7" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Content="중복확인" BorderBrush="Black" BorderThickness="2" Background="LightBlue" FontSize="25"/>
-        </Grid>
-
         <Grid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
             <Label Content="비밀번호" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         </Grid>
@@ -70,10 +66,6 @@
                  FontSize="24"
                  VerticalContentAlignment="Center"
                  />
-        </Grid>
-
-        <Grid Grid.Row="4" Grid.Column="7" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Content="중복확인" BorderBrush="Black" BorderThickness="2" Background="LightBlue" FontSize="25"/>
         </Grid>
 
         <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
@@ -104,10 +96,6 @@
                  />
         </Grid>
 
-        <Grid Grid.Row="5" Grid.Column="7" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Content="중복확인" BorderBrush="Black" BorderThickness="2" Background="LightBlue" FontSize="25"/>
-        </Grid>
-
         <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
             <Button x:Name="NewAccount_Button"
                 Command="{Binding newCommand}"
@@ -120,7 +108,11 @@
         </Grid>
 
         <Grid Grid.Row="8" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <Button Content="뒤로가기" BorderBrush="Black" BorderThickness="2" Background="LightBlue" FontSize="30"/>
+            <Button Content="뒤로가기"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    Background="LightBlue"
+                    FontSize="30"/>
         </Grid>
 
     </Grid>
