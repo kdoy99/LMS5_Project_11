@@ -31,7 +31,8 @@ namespace Project_11.ViewModel
                 $"ID: {UserAccount.ID}\nPW: {UserAccount.Password}";
             MessageBox.Show(text);
 
-            Game client = new Game();
+            ViewModel_Game viewModel = new ViewModel_Game(UserAccount);
+            Game client = new Game(viewModel);
             client.Show();
         }
         private void Access(object obj)

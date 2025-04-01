@@ -5,13 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_11.View"
         mc:Ignorable="d"
-        xmlns:vm="clr-namespace:Project_11.ViewModel"
 
-        Title="Client" Height="600" Width="800">
-    <Window.DataContext>
-        <vm:ViewModel_Game/>
-    </Window.DataContext>
-    
+        Title="Game" Height="600" Width="800">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
@@ -37,8 +33,16 @@
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="Game_ID" Text="{Binding Game_Account.ID}" FontSize="14" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="2"/>
+        
+
+        <Grid Grid.Row="1" Grid.Column="8" Margin="10,10,10,10">
+            <TextBox x:Name="Game_ID" 
+                     Text="{Binding Game_Account.ID}" 
+                     FontSize="14" 
+                     VerticalContentAlignment="Center" 
+                     BorderBrush="Black" 
+                     BorderThickness="2"
+                     />
         </Grid>
 
     </Grid>

@@ -42,7 +42,7 @@
 
         <Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,10,10,10">
             <TextBox x:Name="idBox"
-                     Text="{Binding UserAccount.ID, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding UserAccount.ID}"
                      BorderBrush="Black" 
                      BorderThickness="2" 
                      FontSize="24" 

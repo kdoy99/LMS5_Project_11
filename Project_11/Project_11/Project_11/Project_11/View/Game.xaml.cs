@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Project_11.Model;
+using Project_11.ViewModel;
 
 namespace Project_11.View
 {
@@ -19,9 +21,10 @@ namespace Project_11.View
     /// </summary>
     public partial class Game : Window
     {
-        public Game()
+        public Game(ViewModel_Game viewModel)
         {
             InitializeComponent();
+            this.DataContext = viewModel;
         }
 
         public void DisplayMessage(string textbox_input)
