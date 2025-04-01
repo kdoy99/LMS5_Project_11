@@ -32,5 +32,12 @@ namespace Project_11.View
                 viewmodel.account.Password = pwBox_New.Password;
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Login login = new Login();
+            Close();
+            login.Show();
+        }
     }
 }

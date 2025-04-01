@@ -98,7 +98,7 @@
 
         <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
             <Button x:Name="NewAccount_Button"
-                Command="{Binding newCommand}"
+                Command="{Binding Command_SignUp}"
                 Content="회원가입" 
                 BorderBrush="Black" 
                 BorderThickness="2" 
@@ -112,7 +112,7 @@
                     BorderBrush="Black"
                     BorderThickness="2"
                     Background="LightBlue"
-                    FontSize="30"/>
+                    FontSize="30" Click="Button_Click"/>
         </Grid>
 
     </Grid>

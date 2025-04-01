@@ -9,6 +9,7 @@ using System.Windows;
 using Project_11.Model;
 using Project_11.View;
 using Project_11.ViewModel.Commands;
+using System.Text.Json;
 
 namespace Project_11.ViewModel
 {
@@ -31,14 +32,18 @@ namespace Project_11.ViewModel
 
         public ViewModel_SignUp()
         {
-            Command_SignUp = new Command_SignUp(ConnectToServer);
+            Command_SignUp = new Command_SignUp(_ => ConnectToServer(SerializeAccount(account)));
             account = new Account();
         }
         public void DisplayMessage_New(string message)
         {
             MessageBox.Show(message);
         }
-        public async Task ConnectToServer(string message)   
+        public string SerializeAccount(Account account)
+        {
+            return JsonSerializer.Serialize(account);
+        }
+        public async Task ConnectToServer(string json)
         {
             try
             {
@@ -49,9 +54,9 @@ namespace Project_11.ViewModel
 
                     NetworkStream stream = client.GetStream();
 
-                    byte[] data = Encoding.UTF8.GetBytes(message);
+                    byte[] data = Encoding.UTF8.GetBytes(json);
                     await stream.WriteAsync(data, 0, data.Length);
-                    DisplayMessage_New($"서버로 보낸 메시지: {message}");
+                    DisplayMessage_New($"서버로 보낸 메시지: {json}");
 
                     byte[] buffer = new byte[1024];
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
