@@ -46,7 +46,7 @@
 
         <Grid Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
             <TextBox x:Name="idBox_New"
-                 Text="{Binding UserAccount.ID}"
+                 Text="{Binding account.ID}"
                  BorderBrush="Black" 
                  BorderThickness="2" 
                  FontSize="24" 

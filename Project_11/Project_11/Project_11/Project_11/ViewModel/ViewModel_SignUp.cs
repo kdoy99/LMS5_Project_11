@@ -32,8 +32,8 @@ namespace Project_11.ViewModel
 
         public ViewModel_SignUp()
         {
-            Command_SignUp = new Command_SignUp(_ => ConnectToServer(SerializeAccount(account)));
             account = new Account();
+            Command_SignUp = new Command_SignUp(_ => ConnectToServer(SerializeAccount(account)));
         }
         public void DisplayMessage_New(string message)
         {
@@ -47,6 +47,9 @@ namespace Project_11.ViewModel
         {
             try
             {
+                DisplayMessage_New("서버 연결 시도 중...");
+                Console.WriteLine("서버 연결 시도 중...");
+
                 using (TcpClient client = new TcpClient(address, port))
                 {
                     DisplayMessage_New($"서버에 연결됨: " +
@@ -67,10 +70,11 @@ namespace Project_11.ViewModel
             catch (Exception ex)
             {
                 DisplayMessage_New($"서버 연결 중 오류 발생! : {ex.Message}");
+                Console.WriteLine($"Exception: {ex.Message}");
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -17,14 +17,14 @@ namespace Project_11.ViewModel.Commands
             _execute = ViewModel_Method;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return true;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object? parameter)
         {
             if (parameter is string message)
             {

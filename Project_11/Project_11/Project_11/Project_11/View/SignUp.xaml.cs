@@ -35,9 +35,7 @@ namespace Project_11.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Login login = new Login();
             Close();
-            login.Show();
         }
     }
 }
