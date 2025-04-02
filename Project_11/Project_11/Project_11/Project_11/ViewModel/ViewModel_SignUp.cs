@@ -26,24 +26,24 @@ namespace Project_11.ViewModel
             set
             {
                 _acccount = value;
-                OnPropertyChanged(nameof(Account));
+                OnPropertyChanged(nameof(account));
             }
         }
 
         public ViewModel_SignUp()
         {
             account = new Account();
-            Command_SignUp = new Command_SignUp(_ => ConnectToServer(SerializeAccount(account)));
+            Command_SignUp = new Command_SignUp(async _ => await ConnectToServer());
         }
         public void DisplayMessage_New(string message)
         {
             MessageBox.Show(message);
         }
-        public string SerializeAccount(Account account)
+        public string SerializeAccount()
         {
             return JsonSerializer.Serialize(account);
         }
-        public async Task ConnectToServer(string json)
+        public async Task ConnectToServer()
         {
             try
             {
@@ -55,16 +55,19 @@ namespace Project_11.ViewModel
                     DisplayMessage_New($"서버에 연결됨: " +
                     $"{client.Client.RemoteEndPoint}");
 
-                    NetworkStream stream = client.GetStream();
+                    string json = SerializeAccount();
 
-                    byte[] data = Encoding.UTF8.GetBytes(json);
-                    await stream.WriteAsync(data, 0, data.Length);
-                    DisplayMessage_New($"서버로 보낸 메시지: {json}");
+                    using (NetworkStream stream = client.GetStream())
+                    {
+                        byte[] data = Encoding.UTF8.GetBytes(json);
+                        await stream.WriteAsync(data, 0, data.Length);
+                        DisplayMessage_New($"서버로 보낸 메시지: {json}");
 
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    DisplayMessage_New($"서버로부터 받은 응답: {receivedMessage}");
+                        byte[] buffer = new byte[1024];
+                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                        string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        DisplayMessage_New($"서버로부터 받은 응답: {receivedMessage}");
+                    }
                 }
             }
             catch (Exception ex)

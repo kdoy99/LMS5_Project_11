@@ -24,6 +24,7 @@ namespace Project_11_Server.Controller
 
         public async Task StartServer()
         {
+            InitializeDatabase();
             _listener.Start();
             log.DisplayLog("서버 시작");
 
@@ -36,6 +37,33 @@ namespace Project_11_Server.Controller
                 await HandleClientAsync(client);
             }
             
+        }
+
+        private void InitializeDatabase()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection("Server=localhost;Database=project_11;Uid=root;Pwd=1234;"))
+                {
+                    connection.Open();
+                    string createTableQuery = @"
+                        CREATE TABLE IF NOT EXISTS users (
+                            ID VARCHAR(50) PRIMARY KEY,
+                            Password VARCHAR(255) NOT NULL,
+                            Name VARCHAR(50) NOT NULL UNIQUE,
+                            Contact VARCHAR(50) NOT NULL UNIQUE
+                        );";
+
+                    using (MySqlCommand cmd = new MySqlCommand(createTableQuery, connection))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.DisplayLog($"DB 초기화 중 오류 발생: {ex.Message}");
+            }
         }
 
         private async Task HandleClientAsync(TcpClient client)

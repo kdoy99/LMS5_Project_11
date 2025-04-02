@@ -10,7 +10,7 @@ namespace Project_11.ViewModel.Commands
 {
     public class Command_SignUp : ICommand
     {
-        private Func<string, Task> _execute;
+        private readonly Func<string, Task> _execute;
 
         public Command_SignUp(Func<string, Task> ViewModel_Method)
         {
