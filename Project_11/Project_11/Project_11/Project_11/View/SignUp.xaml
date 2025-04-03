@@ -65,7 +65,7 @@
         <Grid Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
-                    BorderThickness="2"
+                    BorderThickness="0"
                     CornerRadius="20"
                     Padding="8"
                     >
@@ -79,7 +79,7 @@
                 <TextBox x:Name="idBox_New"
                          Text="{Binding account.ID}"
                          BorderThickness="0" 
-                         FontSize="2"
+                         FontSize="12"
                          VerticalContentAlignment="Center"
                          />
             </Border>
@@ -99,7 +99,7 @@
         <Grid Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
-                    BorderThickness="2"
+                    BorderThickness="0"
                     CornerRadius="20"
                     Padding="8"
                     >
@@ -113,7 +113,7 @@
                 <PasswordBox x:Name="pwBox_New"
                              PasswordChanged="pwBox_PasswordChanged" 
                              BorderThickness="0"
-                             FontSize="24"
+                             FontSize="12"
                              VerticalContentAlignment="Center"
                              />
             </Border>
@@ -133,7 +133,7 @@
         <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
-                    BorderThickness="2"
+                    BorderThickness="0"
                     CornerRadius="20"
                     Padding="8"
                     >
@@ -147,7 +147,7 @@
                 <TextBox x:Name="nameBox_New"
                          Text="{Binding account.Name}" 
                          BorderThickness="0"
-                         FontSize="24"
+                         FontSize="12"
                          VerticalContentAlignment="Center"
                          />
             </Border>
@@ -167,7 +167,7 @@
         <Grid Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
-                    BorderThickness="2"
+                    BorderThickness="0"
                     CornerRadius="20"
                     Padding="8"
                     >
@@ -181,7 +181,7 @@
                 <TextBox x:Name="contactBox_New"
                          Text="{Binding account.Contact}" 
                          BorderThickness="0"
-                         FontSize="24"
+                         FontSize="12"
                          VerticalContentAlignment="Center"
                          />
             </Border>
@@ -190,7 +190,7 @@
         <Grid Grid.Row="11" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,10">
             <Border Background="#2C3E50"
                     BorderBrush="Black"
-                    BorderThickness="2"
+                    BorderThickness="0"
                     CornerRadius="20"
                     Padding="8"
                     >
@@ -210,8 +210,33 @@
                         FontFamily="Arial"
                         Foreground="#ECF0F1"
                         FontSize="24"
-                        VerticalContentAlignment="Center"
-                        >
+                        VerticalContentAlignment="Center">
+
+                    <!-- Hover 효과 제거 -->
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#2C3E50"/>
+                            <Setter Property="Foreground" Value="#ECF0F1"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontFamily" Value="Arial"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+                            <!-- 기본 버튼 템플릿 -->
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    Padding="5"
+                                    CornerRadius="10">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
                 </Button>
             </Border>
 
@@ -219,13 +244,13 @@
 
         <Grid Grid.Row="1" Grid.Column="1">
             <Button Click="Button_Click"
-        BorderThickness="0">
+                    BorderThickness="0">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                    BorderThickness="0">
+                                BorderThickness="0">
                             <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Button.Template>
