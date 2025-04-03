@@ -7,80 +7,166 @@
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:Project_11.ViewModel"
         
-        Title="도셀로" Height="450" Width="600">
+        Title="New Othello Online" Height="450" Width="600">
 
     <Window.DataContext>
         <vm:ViewModel_Login/>
     </Window.DataContext>
 
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/View/othello.jpg" Opacity="0.85"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="2" Grid.Column="2" Margin="10,10,10,10">
-            <Label Content="ID" FontSize="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="6">
+            <Label Content="New Othello Online"
+                   FontFamily="Arial"
+                   FontSize="50"
+                   FontWeight="Bold"
+                   
+                   HorizontalAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   >
+                <Label.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FFF6F6F6" Offset="1"/>
+                        <GradientStop Color="#FFB2B2B2" Offset="0"/>
+                    </LinearGradientBrush>
+                </Label.Foreground>
+                <Label.Effect>
+                    <DropShadowEffect Color="Black"
+                          BlurRadius="10" 
+                          ShadowDepth="0"
+                          Opacity="1"/>
+                </Label.Effect>
+            </Label>
         </Grid>
 
-        <Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="idBox"
-                     Text="{Binding UserAccount.ID}"
-                     BorderBrush="Black" 
-                     BorderThickness="2" 
-                     FontSize="24" 
-                     VerticalContentAlignment="Center"
-                     />
+        <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
+            <Border Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="15"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <TextBox x:Name="idBox"
+                         Text="{Binding UserAccount.ID}"
+                         Foreground="Black"
+                         Padding="5"
+                         BorderThickness="0"
+                         VerticalContentAlignment="Center"
+                         FontSize="12"
+                         FontWeight="Bold"
+                         />
+            </Border>
+
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="2" Margin="10,10,10,10">
-            <Label Content="PW" FontSize="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>    
+        <Grid Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
+            <Border Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="10"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <PasswordBox x:Name="pwBox"
+                             PasswordChanged="pwBox_PasswordChanged"
+                             BorderThickness="0"
+                             FontSize="12"
+                             Padding="5"
+                             VerticalContentAlignment="Center"
+                             />
+            </Border>
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <PasswordBox x:Name="pwBox"
-                     PasswordChanged="pwBox_PasswordChanged"
-                     BorderBrush="Black" 
-                     BorderThickness="2"
-                     FontSize="24"
-                     VerticalContentAlignment="Center"
-                     />
+        <Grid Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10,10,10,0">
+            <Border Background="LightYellow"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                          BlurRadius="10"
+                          ShadowDepth="10"
+                          Opacity="0.5"
+                          />
+                </Border.Effect>
+                <Button Command="{Binding OpenLoginCommand}"
+                        Content="Login" 
+                        BorderThickness="0" 
+                        Background="LightYellow"
+                        FontSize="30"
+                        FontFamily="Arial"
+                        FontWeight="Bold"
+                        >
+                </Button>
+            </Border>
+            
         </Grid>
 
-        <Grid Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Command="{Binding OpenLoginCommand}"
-                    Content="로그인" 
-                    BorderBrush="Black" 
-                    BorderThickness="2" 
-                    Background="LightBlue" 
-                    FontSize="30">
-            </Button>
-        </Grid>
-
-        <Grid Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Button Command="{Binding OpenAccessCommand}"
-                    Content="회원가입" 
-                    BorderBrush="Black" 
-                    BorderThickness="2" 
-                    Background="LightBlue" 
-                    FontSize="30"/>
+        <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10,10,10,0">
+            <Border Background="LightYellow"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="10"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <Button Command="{Binding OpenAccessCommand}"
+                        Content="SignUp" 
+                        BorderThickness="0"
+                        Background="LightYellow"
+                        FontSize="30"
+                        FontFamily="Arial"
+                        FontWeight="Bold"
+                        />
+            </Border>
         </Grid>
 
     </Grid>
