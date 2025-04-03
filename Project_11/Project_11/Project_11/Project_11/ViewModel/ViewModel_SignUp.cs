@@ -20,6 +20,8 @@ namespace Project_11.ViewModel
         private int port = 5457;
         public Command_SignUp Command_SignUp { get; set; }
         private Account _acccount;
+
+        // 프로퍼티
         public Account account
         {
             get {  return _acccount; }
@@ -33,40 +35,50 @@ namespace Project_11.ViewModel
         public ViewModel_SignUp()
         {
             account = new Account();
-            Command_SignUp = new Command_SignUp(async _ => await ConnectToServer());
+            // 서버 연결 커맨드
+            Command_SignUp = new Command_SignUp(async () => await ConnectToServer());
         }
         public void DisplayMessage_New(string message)
         {
             MessageBox.Show(message);
         }
-        public string SerializeAccount()
+        public string SerializeAccount() // 클래스 넘기기 위한 직렬화
         {
             return JsonSerializer.Serialize(account);
         }
-        public async Task ConnectToServer()
+        public async Task ConnectToServer() // 서버 연결
         {
             try
             {
-                DisplayMessage_New("서버 연결 시도 중...");
-                Console.WriteLine("서버 연결 시도 중...");
+                string json = SerializeAccount();
 
-                using (TcpClient client = new TcpClient(address, port))
+                using (TcpClient client = new TcpClient())
                 {
-                    DisplayMessage_New($"서버에 연결됨: " +
-                    $"{client.Client.RemoteEndPoint}");
-
-                    string json = SerializeAccount();
+                    await client.ConnectAsync(address, port);
 
                     using (NetworkStream stream = client.GetStream())
                     {
                         byte[] data = Encoding.UTF8.GetBytes(json);
                         await stream.WriteAsync(data, 0, data.Length);
-                        DisplayMessage_New($"서버로 보낸 메시지: {json}");
 
                         byte[] buffer = new byte[1024];
-                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length); // 서버 응답 기다림
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        DisplayMessage_New($"서버로부터 받은 응답: {receivedMessage}");
+                        
+                        DisplayMessage_New(receivedMessage);
+                        if (receivedMessage.StartsWith("계정")) // 회원가입 완료
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    if (window is SignUp)
+                                    {
+                                        window.Close();
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
             }

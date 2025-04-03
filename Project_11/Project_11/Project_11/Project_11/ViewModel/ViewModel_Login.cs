@@ -15,8 +15,8 @@ namespace Project_11.ViewModel
     public class ViewModel_Login
     {
         public Account UserAccount { get; set; }
-        public ICommand OpenLoginCommand { get; set; }
-        public ICommand OpenAccessCommand { get; set; }
+        public ICommand OpenLoginCommand { get; set; } // 로그인 버튼 클릭용 커맨드
+        public ICommand OpenAccessCommand { get; set; } // 회원가입 버튼 클릭용 커맨드
 
         public ViewModel_Login()
         {
@@ -37,8 +37,8 @@ namespace Project_11.ViewModel
         }
         private void Access(object obj)
         {
-            SignUp newAccount = new SignUp();
-            newAccount.Show();
+            SignUp signUp = new SignUp();
+            signUp.Show();
         }
     }
 }

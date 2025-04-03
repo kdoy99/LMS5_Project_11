@@ -23,6 +23,7 @@ namespace Project_11.View
         public SignUp()
         {
             InitializeComponent();
+            DataContext = new ViewModel_SignUp();
         }
 
         private void pwBox_PasswordChanged(object sender, RoutedEventArgs e)
