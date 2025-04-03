@@ -12,24 +12,35 @@
     <Window.DataContext>
         <vm:ViewModel_SignUp/>
     </Window.DataContext>
-    
+
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FFF6F6F6" Offset="1"/>
+                <GradientStop Color="#FFB2B2B2" Offset="0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -40,79 +51,188 @@
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Label Content="아이디" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Grid Grid.Row="2" Grid.Column="4" Margin="10,0,0,0">
+            <Label Content="아이디"
+                   FontFamily="Arial"
+                   Foreground="DarkSlateGray"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   />
         </Grid>
 
-        <Grid Grid.Row="2" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="idBox_New"
-                 Text="{Binding account.ID}"
-                 BorderBrush="Black" 
-                 BorderThickness="2" 
-                 FontSize="24" 
-                 VerticalContentAlignment="Center"
-                 />
-        </Grid>
-
-        <Grid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Label Content="비밀번호" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        </Grid>
-
-        <Grid Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <PasswordBox x:Name="pwBox_New"
-                 PasswordChanged="pwBox_PasswordChanged"
-                 BorderBrush="Black" 
-                 BorderThickness="2"
-                 FontSize="24"
-                 VerticalContentAlignment="Center"
-                 />
-        </Grid>
-
-        <Grid Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Label Content="닉네임" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        </Grid>
-
-        <Grid Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="nameBox_New"
-                 Text="{Binding account.Name}"
-                 BorderBrush="Black" 
-                 BorderThickness="2"
-                 FontSize="24"
-                 VerticalContentAlignment="Center"
-                 /> 
-        </Grid>
-
-        <Grid Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" Margin="10,10,10,10">
-            <Label Content="연락처" FontSize="25" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        </Grid>
-
-        <Grid Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <TextBox x:Name="contactBox_New"
-                     Text="{Binding account.Contact}"
-                 BorderBrush="Black" 
-                 BorderThickness="2"
-                 FontSize="24"
-                 VerticalContentAlignment="Center"
-                 />
-        </Grid>
-
-        <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <Button x:Name="NewAccount_Button"
-                Command="{Binding Command_SignUp}"
-                Content="회원가입" 
-                BorderBrush="Black" 
-                BorderThickness="2" 
-                Background="LightBlue" 
-                FontSize="30">
-            </Button>
-        </Grid>
-
-        <Grid Grid.Row="8" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,10,10,10">
-            <Button Content="뒤로가기"
+        <Grid Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
+            <Border Background="White"
                     BorderBrush="Black"
                     BorderThickness="2"
-                    Background="LightBlue"
-                    FontSize="30" Click="Button_Click"/>
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="5"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <TextBox x:Name="idBox_New"
+                         Text="{Binding account.ID}"
+                         BorderThickness="0" 
+                         FontSize="2"
+                         VerticalContentAlignment="Center"
+                         />
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="4" Grid.Column="4" Margin="10,0,0,0">
+            <Label Content="비밀번호"
+                   FontFamily="Arial"
+                   Foreground="DarkSlateGray"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   />
+        </Grid>
+
+        <Grid Grid.Row="5" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
+            <Border Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="5"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <PasswordBox x:Name="pwBox_New"
+                             PasswordChanged="pwBox_PasswordChanged" 
+                             BorderThickness="0"
+                             FontSize="24"
+                             VerticalContentAlignment="Center"
+                             />
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="6" Grid.Column="4" Margin="10,0,0,0">
+            <Label Content="닉네임"
+                   FontFamily="Arial"
+                   Foreground="DarkSlateGray"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   />
+        </Grid>
+
+        <Grid Grid.Row="7" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
+            <Border Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="5"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <TextBox x:Name="nameBox_New"
+                         Text="{Binding account.Name}" 
+                         BorderThickness="0"
+                         FontSize="24"
+                         VerticalContentAlignment="Center"
+                         />
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="8" Grid.Column="4" Margin="10,0,0,0">
+            <Label Content="연락처"
+                   FontFamily="Arial"
+                   Foreground="DarkSlateGray"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   />
+        </Grid>
+
+        <Grid Grid.Row="9" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,20">
+            <Border Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="5"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <TextBox x:Name="contactBox_New"
+                         Text="{Binding account.Contact}" 
+                         BorderThickness="0"
+                         FontSize="24"
+                         VerticalContentAlignment="Center"
+                         />
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="11" Grid.Column="4" Grid.ColumnSpan="3" Margin="10,0,10,10">
+            <Border Background="#2C3E50"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    CornerRadius="20"
+                    Padding="8"
+                    >
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="10"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <Button x:Name="NewAccount_Button"
+                        Command="{Binding Command_SignUp}"
+                        Content="회원가입" 
+                        BorderThickness="0"
+                        Background="#2C3E50"
+                        FontWeight="Bold"
+                        FontFamily="Arial"
+                        Foreground="#ECF0F1"
+                        FontSize="24"
+                        VerticalContentAlignment="Center"
+                        >
+                </Button>
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Button Click="Button_Click"
+        BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                    BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Background>
+                    <ImageBrush ImageSource="/View/back.png"/>
+                </Button.Background>
+            </Button>
         </Grid>
 
     </Grid>
