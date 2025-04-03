@@ -66,6 +66,17 @@
             </Label>
         </Grid>
 
+        <Grid Grid.Row="3" Grid.Column="3" Grid.RowSpan="2" Margin="10,0,0,30">
+            <Label Content="아이디"
+                   FontFamily="Arial"
+                   Foreground="#ECF0F1"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Center"
+                   />
+        </Grid>
+
         <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
             <Border Background="White"
                     BorderBrush="Black"
@@ -89,7 +100,17 @@
                          FontSize="12"
                          />
             </Border>
+        </Grid>
 
+        <Grid Grid.Row="4" Grid.Column="3" Grid.RowSpan="2" Margin="10,0,0,0">
+            <Label Content="비밀번호"
+                   FontFamily="Arial"
+                   Foreground="#ECF0F1"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   VerticalContentAlignment="Center"
+                   VerticalAlignment="Center"
+                   />
         </Grid>
 
         <Grid Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
