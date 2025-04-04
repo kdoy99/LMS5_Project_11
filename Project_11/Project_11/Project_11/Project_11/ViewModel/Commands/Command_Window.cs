@@ -8,16 +8,14 @@ using Project_11.View;
 
 namespace Project_11.ViewModel.Commands
 {
-    public class Command_SignUp : ICommand
+    public class Command_Window : ICommand
     {
-        // 서버 연결하기 위해 매개변수 필요없는 Func<Task> 사용
-        private readonly Func<Task> _execute;
+        private Action<string> _execute;
 
-        public Command_SignUp(Func<Task> ViewModel_Method)
+        public Command_Window(Action<string> ViewModel_Method)
         {
             _execute = ViewModel_Method;
         }
-
         public event EventHandler? CanExecuteChanged;
 
         public bool CanExecute(object? parameter)
@@ -25,9 +23,9 @@ namespace Project_11.ViewModel.Commands
             return true;
         }
 
-        public async void Execute(object? parameter)
+        public void Execute(object? parameter)
         {
-            await _execute.Invoke();
+            _execute.Invoke(parameter as string);
         }
     }
 }

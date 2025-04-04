@@ -18,7 +18,7 @@ namespace Project_11.ViewModel
     {
         private string address = "127.0.0.1";
         private int port = 0001;
-        public Command_SignUp Command_SignUp { get; set; }
+        public Command_Account Command_SignUp { get; set; }
         private Account _acccount;
 
         // 프로퍼티
@@ -36,7 +36,7 @@ namespace Project_11.ViewModel
         {
             account = new Account();
             // 서버 연결 커맨드
-            Command_SignUp = new Command_SignUp(async () => await ConnectToServer());
+            Command_SignUp = new Command_Account(async () => await ConnectToServer());
         }
         public void DisplayMessage_New(string message)
         {
@@ -44,6 +44,7 @@ namespace Project_11.ViewModel
         }
         public string SerializeAccount() // 클래스 넘기기 위한 직렬화
         {
+            account.Type = "회원가입";
             return JsonSerializer.Serialize(account);
         }
         public async Task ConnectToServer() // 서버 연결

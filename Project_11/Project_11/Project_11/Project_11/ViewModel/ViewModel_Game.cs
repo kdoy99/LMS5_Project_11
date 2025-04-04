@@ -13,7 +13,7 @@ namespace Project_11.ViewModel
 {
     public class ViewModel_Game : INotifyPropertyChanged
     {
-        public Command_SignUp newCommand { get; set; }
+        public Command_Account newCommand { get; set; }
         private Account _Game_Account;
         public Account Game_Account
         {

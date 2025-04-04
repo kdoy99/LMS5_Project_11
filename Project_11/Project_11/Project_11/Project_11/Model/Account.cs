@@ -61,6 +61,8 @@ namespace Project_11.Model
                 }
             }
         }
+        public string Type { get; set; } // 로그인인지, 회원가입인지
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

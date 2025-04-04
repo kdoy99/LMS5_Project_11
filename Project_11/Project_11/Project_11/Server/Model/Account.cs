@@ -12,5 +12,6 @@ namespace Project_11_Server.Model
         public string Password { get; set; }
         public string Name { get; set; }
         public string Contact { get; set; }
+        public string Type { get; set; }
     }
 }

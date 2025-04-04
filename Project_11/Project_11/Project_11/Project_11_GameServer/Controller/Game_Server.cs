@@ -153,7 +153,7 @@ namespace Project_11_GameServer.Controller
                             {
                                 ID = reader.GetString("ID"),
                                 Name = reader.GetString("Name"),
-                                Match = reader.GetInt32("Match"),
+                                TotalMatch = reader.GetInt32("Match"),
                                 Win = reader.GetInt32("Win"),
                                 Lose = reader.GetInt32("Lose"),
                                 Rating = reader.GetInt32("Rating")

@@ -65,7 +65,7 @@ namespace Project_11_Server.Controller
                         CREATE TABLE IF NOT EXISTS status (
                             ID VARCHAR(50) PRIMARY KEY,
                             Name VARCHAR(50) NOT NULL UNIQUE,
-                            Match INT NOT NULL DEFAULT 0,
+                            TotalMatch INT NOT NULL DEFAULT 0,
                             Win INT NOT NULL DEFAULT 0,
                             Lose INT NOT NULL DEFAULT 0,
                             Rating INT NOT NULL DEFAULT 0,
@@ -88,6 +88,7 @@ namespace Project_11_Server.Controller
         {
             try
             {
+                
                 NetworkStream stream = client.GetStream();
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -98,27 +99,51 @@ namespace Project_11_Server.Controller
                     log.DisplayLog($"받은 메시지: {json}");
 
                     Account account = JsonSerializer.Deserialize<Account>(json);
-                    string isSuccess = ConnectDB(account);
 
-                    string response;
-                    if (isSuccess == "성공")
+                    if (account.Type == "회원가입")
                     {
-                        response = $"계정 생성 완료!\n" +
-                            $"아이디: {account.ID}\n" +
-                            $"닉네임: {account.Name}";
-                    }
-                    else if (isSuccess == "중복")
-                    {
-                        response = $"중복된 ID, 닉네임 또는 연락처가 존재합니다.";
-                    }
-                    else
-                    {
-                        response = $"알 수 없는 오류로 계정 생성 실패..";
-                    }
+                        string isSuccess = ConnectDB(account);
 
-                    byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-                    await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
-                    log.DisplayLog($"클라이언트에 메시지 전송: {response}");
+                        string response;
+                        if (isSuccess == "성공")
+                        {
+                            response = $"계정 생성 완료!\n" +
+                                $"아이디: {account.ID}\n" +
+                                $"닉네임: {account.Name}";
+                        }
+                        else if (isSuccess == "중복")
+                        {
+                            response = $"중복된 ID, 닉네임 또는 연락처가 존재합니다.";
+                        }
+                        else
+                        {
+                            response = $"알 수 없는 오류로 계정 생성 실패..";
+                        }
+
+                        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+                        await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                        log.DisplayLog($"클라이언트에 메시지 전송: {response}");
+                    }
+                    else if (account.Type == "로그인")
+                    {
+                        bool isSuccess = CheckID(account);
+
+                        string response = "";
+                        if (isSuccess)
+                        {
+                            response = $"로그인 성공!\n" +
+                                $"{account.ID} 님 환영합니다!";
+                        }
+                        else if (!isSuccess)
+                        {
+                            response = $"ID 혹은 비밀번호가 틀렸습니다.";
+                        }
+
+                        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+                        await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                        log.DisplayLog($"클라이언트에 메시지 전송: {response}");
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -195,6 +220,43 @@ namespace Project_11_Server.Controller
             {
                 log.DisplayLog($"DB 연결 중 오류 발생: {ex.Message}");
                 return "실패";
+            }
+        }
+
+        private bool CheckID(Account account)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection("Server = localhost;Database=project_11;Uid=root;Pwd=1234;"))
+                {
+                    connection.Open();
+                    log.DisplayLog("DB 연결 성공");
+
+                    // 아이디, 비밀번호 일치 검사
+                    string selectQuery = "SELECT COUNT(*) FROM users WHERE ID = @ID AND Password = @Password";
+                    using (MySqlCommand loginCmd = new MySqlCommand(selectQuery, connection))
+                    {
+                        loginCmd.Parameters.AddWithValue("@ID", account.ID);
+                        loginCmd.Parameters.AddWithValue("@Password", account.Password);
+
+                        int count = Convert.ToInt32(loginCmd.ExecuteScalar());
+
+                        if (count > 0)
+                        {
+                            log.DisplayLog("로그인 성공!");
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.DisplayLog($"DB 연결 중 오류 발생: {ex.Message}");
+                return false;
             }
         }
     }
