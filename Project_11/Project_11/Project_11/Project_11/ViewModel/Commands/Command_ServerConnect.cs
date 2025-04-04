@@ -8,12 +8,13 @@ using Project_11.View;
 
 namespace Project_11.ViewModel.Commands
 {
-    public class Command_Account : ICommand
+    // 서버 연결용 커맨드 (매개변수 X)
+    public class Command_ServerConnect : ICommand
     {
         // 서버 연결하기 위해 매개변수 필요없는 Func<Task> 사용
         private readonly Func<Task> _execute;
 
-        public Command_Account(Func<Task> ViewModel_Method)
+        public Command_ServerConnect(Func<Task> ViewModel_Method)
         {
             _execute = ViewModel_Method;
         }

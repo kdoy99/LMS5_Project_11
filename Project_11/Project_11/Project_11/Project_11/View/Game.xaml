@@ -5,37 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_11.View"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
 
-        Title="Game" Height="600" Width="800">
+        Title="Game" Height="750" Width="1000">
 
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FFF6F6F6" Offset="1"/>
+                <GradientStop Color="#FFB2B2B2" Offset="0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
             <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="1.5*"/>
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="0.5*"/>
-            <ColumnDefinition Width="0.5*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        
+       <Label x:Name="Title" Grid.Row="1" Grid.Column="1"
+              Content="New Othello Online"
+              FontFamily="Arial"
+              FontSize="50"
+              FontWeight="Bold"
+              HorizontalAlignment="Center"
+              VerticalContentAlignment="Center"
+              >
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FFF6F6F6" Offset="1"/>
+                    <GradientStop Color="#FFB2B2B2" Offset="0"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+            <Label.Effect>
+                <DropShadowEffect Color="Black"
+                                  BlurRadius="10" 
+                                  ShadowDepth="0"
+                                  Opacity="1"
+                                  />
+            </Label.Effect>
+        </Label>
 
-        <Grid Grid.Row="1" Grid.Column="8" Margin="10,10,10,10">
+        <Grid Grid.Row="1" Grid.Column="3" Margin="10,10,10,10">
             <TextBox x:Name="Game_ID" 
                      Text="{Binding Game_Account.ID}" 
                      FontSize="14" 
@@ -44,6 +70,25 @@
                      BorderThickness="2"
                      />
         </Grid>
+        <Button x:Name="LogOut" Grid.Row="1" Grid.Column="4" Content="로그아웃" Margin="10,10,10,10"/>
+        <ListView x:Name="GameRoomList" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="3" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListBox x:Name="ChatBox" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
 
+        <ListView x:Name="OnlineUserList" Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListBox Name="UserStatus" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <Button x:Name="CreateGameRoom" Grid.Row="7" Grid.Column="3" Content="방 만들기" Margin="10,10,10,10"/>
+        <TextBox x:Name="ChatInput" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,10,10"/>
     </Grid>
 </Window>

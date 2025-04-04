@@ -29,7 +29,7 @@ namespace Project_11.ViewModel
         {
             UserAccount = new Account();
 
-            OpenLoginCommand = new Command_Account(async () => await ConnectToServer());
+            OpenLoginCommand = new Command_ServerConnect(async () => await ConnectToServer());
             OpenAccessCommand = new Command_Window(Access);
         }
 

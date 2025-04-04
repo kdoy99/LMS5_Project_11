@@ -31,5 +31,13 @@ namespace Project_11.View
         {
             MessageBox.Show(textbox_input);
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModel_Game vm)
+            {
+                vm.OnLoaded();
+            }
+        }
     }
 }

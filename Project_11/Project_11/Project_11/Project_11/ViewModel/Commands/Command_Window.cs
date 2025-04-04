@@ -8,6 +8,7 @@ using Project_11.View;
 
 namespace Project_11.ViewModel.Commands
 {
+    // string문 받아서 처리하는 Command
     public class Command_Window : ICommand
     {
         private Action<string> _execute;

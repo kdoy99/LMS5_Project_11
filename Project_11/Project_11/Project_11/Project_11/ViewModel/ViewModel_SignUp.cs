@@ -18,7 +18,7 @@ namespace Project_11.ViewModel
     {
         private string address = "127.0.0.1";
         private int port = 0001;
-        public Command_Account Command_SignUp { get; set; }
+        public Command_ServerConnect Command_SignUp { get; set; }
         private Account _acccount;
 
         // 프로퍼티
@@ -36,7 +36,7 @@ namespace Project_11.ViewModel
         {
             account = new Account();
             // 서버 연결 커맨드
-            Command_SignUp = new Command_Account(async () => await ConnectToServer());
+            Command_SignUp = new Command_ServerConnect(async () => await ConnectToServer());
         }
         public void DisplayMessage_New(string message)
         {
