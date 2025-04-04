@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project_11_Server.Model
+namespace Project_11_GameServer.Model
 {
     public class Status
     {
