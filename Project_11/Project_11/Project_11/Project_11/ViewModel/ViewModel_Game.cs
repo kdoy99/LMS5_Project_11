@@ -16,7 +16,7 @@ namespace Project_11.ViewModel
     public class ViewModel_Game : INotifyPropertyChanged
     {
         private string address = "127.0.0.1";
-        private int port_game = 0002;
+        private int port = 0002;
         private TcpClient _client;
         private NetworkStream _stream;
 
@@ -75,18 +75,18 @@ namespace Project_11.ViewModel
             try
             {
                 _client = new TcpClient();
-                await _client.ConnectAsync(address, port_game);
+                await _client.ConnectAsync(address, port);
                 _stream = _client.GetStream();
                 
                 string json = JsonConvert.SerializeObject(Game_Account);
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 await _stream.WriteAsync(data, 0, data.Length);
 
-                // 서버 응답 기다리는 부분도 가능하면 처리
+                // 서버 응답 기다리는 부분
                 byte[] buffer = new byte[1024];
                 int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
                 string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                // 예: Console.WriteLine($"게임 서버 응답: {response}");
+                // Console.WriteLine($"게임 서버 응답: {response}"); // 미완
             }
             catch (Exception ex)
             {

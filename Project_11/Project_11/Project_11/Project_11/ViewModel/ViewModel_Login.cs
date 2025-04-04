@@ -18,7 +18,7 @@ namespace Project_11.ViewModel
     public class ViewModel_Login
     {
         private string address = "127.0.0.1";
-        private int port_account = 0001;
+        private int port = 0001;
 
         public Account UserAccount { get; set; }
         public ICommand OpenLoginCommand { get; set; } // 로그인 버튼 클릭용 커맨드
@@ -56,7 +56,7 @@ namespace Project_11.ViewModel
 
                 using (TcpClient client = new TcpClient())
                 {
-                    await client.ConnectAsync(address, port_account);
+                    await client.ConnectAsync(address, port);
 
                     using (NetworkStream stream = client.GetStream())
                     {
