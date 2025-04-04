@@ -122,8 +122,6 @@ namespace Project_11.ViewModel
             
         }
 
-        public void 
-
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

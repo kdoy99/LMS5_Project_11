@@ -10,15 +10,12 @@
         Title="Game" Height="750" Width="1000">
 
     <Grid>
-        <!--
         <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="Black"/>
-                <GradientStop Color="#FFF6F6F6" Offset="1"/>
-                <GradientStop Color="#FFB2B2B2" Offset="0"/>
+            <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
+                <GradientStop Color="#FFC2BFF2" Offset="0"/>
+                <GradientStop Color="#FF4A5D91" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        !-->
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
             <RowDefinition Height="0.5*"/>
