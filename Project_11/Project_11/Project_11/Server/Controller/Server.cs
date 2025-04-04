@@ -64,7 +64,7 @@ namespace Project_11_Server.Controller
                     string createTableQuery_status = @"
                         CREATE TABLE IF NOT EXISTS status (
                             ID VARCHAR(50) PRIMARY KEY,
-                            Name VARCHAR(50) NOT NULL UNIQUE,
+                            Name VARCHAR(50),
                             TotalMatch INT NOT NULL DEFAULT 0,
                             Win INT NOT NULL DEFAULT 0,
                             Lose INT NOT NULL DEFAULT 0,
@@ -204,7 +204,7 @@ namespace Project_11_Server.Controller
                     }
 
                     // 생성된 회원별 전적 DB에 저장
-                    string insertQuery_status = "INSERT INTO status (ID) VALUES (@ID)";
+                    string insertQuery_status = "INSERT INTO status (ID, Name) VALUES (@ID, @Name)";
                     using (MySqlCommand insertCmd_status = new MySqlCommand(insertQuery_status, connection))
                     {
                         insertCmd_status.Parameters.AddWithValue("@ID", account.ID);
@@ -255,7 +255,7 @@ namespace Project_11_Server.Controller
             }
             catch (Exception ex)
             {
-                log.DisplayLog($"DB 연결 중 오류 발생: {ex.Message}");
+                log.DisplayLog($"로그인 시도 중 오류 발생: {ex.Message}");
                 return false;
             }
         }

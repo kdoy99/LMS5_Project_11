@@ -33,7 +33,7 @@ namespace Project_11.ViewModel
             OpenAccessCommand = new Command_Window(Access);
         }
 
-        public void DisplayMessage(string message)
+        private void DisplayMessage(string message)
         {
             MessageBox.Show(message);
         }
@@ -44,12 +44,12 @@ namespace Project_11.ViewModel
             signUp.Show();
         }
 
-        public string SerializeAccount() // 클래스 넘기기 위한 직렬화
+        private string SerializeAccount() // 클래스 넘기기 위한 직렬화
         {
             UserAccount.Type = "로그인";
             return JsonConvert.SerializeObject(UserAccount);
         }
-        public async Task ConnectToServer() // 서버 연결
+        private async Task ConnectToServer() // 서버 연결
         {
             try
             {

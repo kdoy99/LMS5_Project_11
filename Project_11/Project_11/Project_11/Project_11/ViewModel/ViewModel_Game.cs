@@ -13,6 +13,9 @@ namespace Project_11.ViewModel
 {
     public class ViewModel_Game : INotifyPropertyChanged
     {
+        private string address = "127.0.0.1";
+        private int port_game = 0002;
+
         public Command_Account newCommand { get; set; }
         private Account _Game_Account;
         public Account Game_Account
@@ -28,6 +31,11 @@ namespace Project_11.ViewModel
         public ViewModel_Game(Account account)
         {
             Game_Account = account;
+        }
+
+        private async Task ConnectToGameServer()
+        {
+
         }
 
         public void CurrentUser(object obj)
