@@ -10,6 +10,7 @@
         Title="Game" Height="750" Width="1000">
 
     <Grid>
+        <!--
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
@@ -17,6 +18,7 @@
                 <GradientStop Color="#FFB2B2B2" Offset="0"/>
             </LinearGradientBrush>
         </Grid.Background>
+        !-->
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
             <RowDefinition Height="0.5*"/>
@@ -89,6 +91,8 @@
         </ListView>
         <ListBox Name="UserStatus" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
         <Button x:Name="CreateGameRoom" Grid.Row="7" Grid.Column="3" Content="방 만들기" Margin="10,10,10,10"/>
-        <TextBox x:Name="ChatInput" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,10,10"/>
+        <TextBox x:Name="ChatInput" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,10,10"
+                 Text="{Binding ChatMessage, UpdateSourceTrigger=PropertyChanged}"
+                 KeyDown="ChatInput_KeyDown"/>
     </Grid>
 </Window>

@@ -39,5 +39,20 @@ namespace Project_11.View
                 vm.OnLoaded();
             }
         }
+
+        private void ChatInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var viewModel = DataContext as ViewModel_Game;
+                if (viewModel?.SendMessageCommand.CanExecute(null) == true)
+                {
+                    viewModel.SendMessageCommand.Execute(null);
+                }
+
+                ChatInput.Focus(); // 포커스 조정
+                e.Handled = true; // 기존 엔터 동작 방지
+            }
+        }
     }
 }
