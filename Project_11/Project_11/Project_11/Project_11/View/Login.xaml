@@ -21,10 +21,10 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="0.5*"/>
@@ -66,18 +66,18 @@
             </Label>
         </Grid>
 
-        <Grid Grid.Row="3" Grid.Column="3" Grid.RowSpan="2" Margin="10,0,0,30">
+        <Grid Grid.Row="3" Grid.Column="3" Margin="10,0,0,0">
             <Label Content="아이디"
                    FontFamily="Arial"
                    Foreground="#ECF0F1"
                    FontWeight="Bold"
                    FontSize="12"
                    VerticalContentAlignment="Center"
-                   VerticalAlignment="Center"
+                   VerticalAlignment="Bottom"
                    />
         </Grid>
 
-        <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
+        <Grid Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
                     BorderThickness="0"
@@ -102,18 +102,18 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="4" Grid.Column="3" Grid.RowSpan="2" Margin="10,0,0,0">
+        <Grid Grid.Row="5" Grid.Column="3" Margin="10,0,0,0">
             <Label Content="비밀번호"
                    FontFamily="Arial"
                    Foreground="#ECF0F1"
                    FontWeight="Bold"
                    FontSize="12"
                    VerticalContentAlignment="Center"
-                   VerticalAlignment="Center"
+                   VerticalAlignment="Bottom"
                    />
         </Grid>
 
-        <Grid Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,10,10,10">
+        <Grid Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" Margin="10,0,10,20">
             <Border Background="White"
                     BorderBrush="Black"
                     BorderThickness="0"

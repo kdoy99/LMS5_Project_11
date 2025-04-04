@@ -13,7 +13,7 @@ namespace Project_11_Server.Controller
     public class Server
     {
         private TcpListener _listener;
-        private int port = 5457;
+        private int port = 0001;
 
         Log log = new Log();
 
@@ -46,7 +46,8 @@ namespace Project_11_Server.Controller
                 using (MySqlConnection connection = new MySqlConnection("Server=localhost;Database=project_11;Uid=root;Pwd=1234;"))
                 {
                     connection.Open();
-                    string createTableQuery = @"
+                    // 유저 정보 테이블 생성
+                    string createTableQuery_users = @"
                         CREATE TABLE IF NOT EXISTS users (
                             ID VARCHAR(50) PRIMARY KEY,
                             Password VARCHAR(255) NOT NULL,
@@ -54,7 +55,24 @@ namespace Project_11_Server.Controller
                             Contact VARCHAR(50) NOT NULL UNIQUE
                         );";
 
-                    using (MySqlCommand cmd = new MySqlCommand(createTableQuery, connection))
+                    using (MySqlCommand cmd = new MySqlCommand(createTableQuery_users, connection))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 유저별 전적 테이블 생성
+                    string createTableQuery_status = @"
+                        CREATE TABLE IF NOT EXISTS status (
+                            ID VARCHAR(50) PRIMARY KEY,
+                            Name VARCHAR(50) NOT NULL UNIQUE,
+                            Match INT NOT NULL DEFAULT 0,
+                            Win INT NOT NULL DEFAULT 0,
+                            Lose INT NOT NULL DEFAULT 0,
+                            Rating INT NOT NULL DEFAULT 0,
+                            FOREIGN KEY (ID) REFERENCES users(ID)
+                        );";
+
+                    using (MySqlCommand cmd = new MySqlCommand(createTableQuery_status, connection))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -138,20 +156,20 @@ namespace Project_11_Server.Controller
                             return "중복";
                         }
                     }
-
-                    string insertQuery = "INSERT INTO users (ID, Password, Name, Contact) VALUES (@ID, @Password, @Name, @Contact)";
-                    using (MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection))
+                    
+                    // 생성된 회원 정보 DB에 저장 
+                    string insertQuery_users = "INSERT INTO users (ID, Password, Name, Contact) VALUES (@ID, @Password, @Name, @Contact)";
+                    using (MySqlCommand insertCmd_users = new MySqlCommand(insertQuery_users, connection))
                     {
-                        insertCmd.Parameters.AddWithValue("@ID", account.ID);
-                        insertCmd.Parameters.AddWithValue("@Password", account.Password);
-                        insertCmd.Parameters.AddWithValue("@Name", account.Name);
-                        insertCmd.Parameters.AddWithValue("@Contact", account.Contact);
+                        insertCmd_users.Parameters.AddWithValue("@ID", account.ID);
+                        insertCmd_users.Parameters.AddWithValue("@Password", account.Password);
+                        insertCmd_users.Parameters.AddWithValue("@Name", account.Name);
+                        insertCmd_users.Parameters.AddWithValue("@Contact", account.Contact);
 
-                        int rowsAffected = insertCmd.ExecuteNonQuery();
+                        int rowsAffected = insertCmd_users.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
                             log.DisplayLog("회원가입 성공!");
-                            return "성공";
                         }
                         else
                         {
@@ -159,6 +177,18 @@ namespace Project_11_Server.Controller
                             return "실패";
                         }
                     }
+
+                    // 생성된 회원별 전적 DB에 저장
+                    string insertQuery_status = "INSERT INTO status (ID) VALUES (@ID)";
+                    using (MySqlCommand insertCmd_status = new MySqlCommand(insertQuery_status, connection))
+                    {
+                        insertCmd_status.Parameters.AddWithValue("@ID", account.ID);
+                        insertCmd_status.Parameters.AddWithValue("@Name", account.Name);
+
+                        insertCmd_status.ExecuteNonQuery();
+                    }
+
+                    return "성공";
                 }
             }
             catch (Exception ex)

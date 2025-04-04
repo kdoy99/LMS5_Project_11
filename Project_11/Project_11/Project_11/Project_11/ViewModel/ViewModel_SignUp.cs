@@ -17,7 +17,7 @@ namespace Project_11.ViewModel
     public class ViewModel_SignUp : INotifyPropertyChanged
     {
         private string address = "127.0.0.1";
-        private int port = 5457;
+        private int port = 0001;
         public Command_SignUp Command_SignUp { get; set; }
         private Account _acccount;
 

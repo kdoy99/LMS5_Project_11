@@ -33,6 +33,16 @@ namespace Project_11.ViewModel
 
             ViewModel_Game viewModel = new ViewModel_Game(UserAccount);
             Game client = new Game(viewModel);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Login)
+                    {
+                        window.Close();
+                    }
+                }
+            });
             client.Show();
         }
         private void Access(object obj)
