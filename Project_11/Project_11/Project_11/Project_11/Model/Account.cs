@@ -62,6 +62,8 @@ namespace Project_11.Model
             }
         }
         public string Type { get; set; } // 로그인인지, 회원가입인지
+        public bool IsSuccess { get; set; } // 각 행동 성공, 실패 여부
+        public string Result { get; set; } // 판단 결과 메시지
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

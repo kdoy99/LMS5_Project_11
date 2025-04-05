@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Net.Sockets;
 using System.Net;
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Project_11.ViewModel
 {
@@ -66,9 +67,11 @@ namespace Project_11.ViewModel
                         byte[] buffer = new byte[1024];
                         int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length); // 서버 응답 기다림
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                        UserAccount = JsonConvert.DeserializeObject<Account>(receivedMessage);
 
-                        DisplayMessage(receivedMessage);
-                        if (receivedMessage.StartsWith("로그인")) // 로그인 완료
+                        DisplayMessage(UserAccount.Result);
+                        MessageBox.Show(receivedMessage);
+                        if (UserAccount.IsSuccess) // 로그인 완료
                         {
                             ViewModel_Game viewModel = new ViewModel_Game(UserAccount);
                             Game game = new Game(viewModel);

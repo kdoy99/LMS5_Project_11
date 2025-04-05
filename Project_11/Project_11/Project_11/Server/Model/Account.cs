@@ -13,5 +13,7 @@ namespace Project_11_Server.Model
         public string Name { get; set; }
         public string Contact { get; set; }
         public string Type { get; set; }
+        public bool IsSuccess { get; set; }
+        public string Result { get; set; }
     }
 }

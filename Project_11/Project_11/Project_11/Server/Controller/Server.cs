@@ -4,9 +4,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Project_11_Server.Model;
 using Project_11_Server.View;
-using System.Text.Json;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1;
+using Newtonsoft.Json;
 
 namespace Project_11_Server.Controller
 {
@@ -98,47 +98,22 @@ namespace Project_11_Server.Controller
                     string json = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     log.DisplayLog($"받은 메시지: {json}");
 
-                    Account account = JsonSerializer.Deserialize<Account>(json);
+                    Account account = JsonConvert.DeserializeObject<Account>(json);
 
                     if (account.Type == "회원가입")
                     {
-                        string isSuccess = ConnectDB(account);
+                        account = ConnectDB(account);
 
-                        string response;
-                        if (isSuccess == "성공")
-                        {
-                            response = $"계정 생성 완료!\n" +
-                                $"아이디: {account.ID}\n" +
-                                $"닉네임: {account.Name}";
-                        }
-                        else if (isSuccess == "중복")
-                        {
-                            response = $"중복된 ID, 닉네임 또는 연락처가 존재합니다.";
-                        }
-                        else
-                        {
-                            response = $"알 수 없는 오류로 계정 생성 실패..";
-                        }
-
+                        string response = JsonConvert.SerializeObject(account);
                         byte[] responseBytes = Encoding.UTF8.GetBytes(response);
                         await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
                         log.DisplayLog($"클라이언트에 메시지 전송: {response}");
                     }
                     else if (account.Type == "로그인")
                     {
-                        bool isSuccess = CheckID(account);
+                        account = CheckID(account);
 
-                        string response = "";
-                        if (isSuccess)
-                        {
-                            response = $"로그인 성공!\n" +
-                                $"{account.ID} 님 환영합니다!";
-                        }
-                        else if (!isSuccess)
-                        {
-                            response = $"ID 혹은 비밀번호가 틀렸습니다.";
-                        }
-
+                        string response = JsonConvert.SerializeObject(account);
                         byte[] responseBytes = Encoding.UTF8.GetBytes(response);
                         await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
                         log.DisplayLog($"클라이언트에 메시지 전송: {response}");
@@ -156,7 +131,7 @@ namespace Project_11_Server.Controller
             }
         }
 
-        private string ConnectDB(Account account)
+        private Account ConnectDB(Account account)
         {
             try
             {
@@ -178,7 +153,9 @@ namespace Project_11_Server.Controller
                         if (count > 0)
                         {
                             log.DisplayLog("중복된 ID, 닉네임 또는 연락처가 존재합니다.");
-                            return "중복";
+                            account.IsSuccess = false;
+                            account.Result = "중복된 ID, 닉네임 또는 연락처가 존재합니다.";
+                            return account;
                         }
                     }
                     
@@ -199,7 +176,9 @@ namespace Project_11_Server.Controller
                         else
                         {
                             log.DisplayLog("회원가입 실패..");
-                            return "실패";
+                            account.IsSuccess = false;
+                            account.Result = "회원가입 실패..";
+                            return account;
                         }
                     }
 
@@ -213,17 +192,22 @@ namespace Project_11_Server.Controller
                         insertCmd_status.ExecuteNonQuery();
                     }
 
-                    return "성공";
+                    account.IsSuccess = true;
+                    account.Result = $"계정 생성 완료!\n" +
+                                $"아이디: {account.ID}\n" +
+                                $"닉네임: {account.Name}";
+                    return account;
                 }
             }
             catch (Exception ex)
             {
                 log.DisplayLog($"DB 연결 중 오류 발생: {ex.Message}");
-                return "실패";
+                account.IsSuccess = false;
+                return account;
             }
         }
 
-        private bool CheckID(Account account)
+        private Account CheckID(Account account)
         {
             try
             {
@@ -232,23 +216,31 @@ namespace Project_11_Server.Controller
                     connection.Open();
                     log.DisplayLog("DB 연결 성공");
 
-                    // 아이디, 비밀번호 일치 검사
-                    string selectQuery = "SELECT COUNT(*) FROM users WHERE ID = @ID AND Password = @Password";
+                    // 아이디, 비밀번호 일치 검사 + Name, Contact 값 가져오기
+                    string selectQuery = "SELECT Name, Contact FROM users WHERE ID = @ID AND Password = @Password";
                     using (MySqlCommand loginCmd = new MySqlCommand(selectQuery, connection))
                     {
                         loginCmd.Parameters.AddWithValue("@ID", account.ID);
                         loginCmd.Parameters.AddWithValue("@Password", account.Password);
 
-                        int count = Convert.ToInt32(loginCmd.ExecuteScalar());
-
-                        if (count > 0)
+                        using (MySqlDataReader reader = loginCmd.ExecuteReader())
                         {
-                            log.DisplayLog("로그인 성공!");
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
+                            if (reader.Read())
+                            {
+                                account.Name = reader.GetString("Name");
+                                account.Contact = reader.GetString("Contact");
+                                account.IsSuccess = true;
+                                account.Result = $"로그인 성공!\n" +
+                                $"{account.ID} 님 환영합니다!";
+                                log.DisplayLog($"{account.ID} 유저 로그인 성공!");
+                            }
+                            else
+                            {
+                                account.IsSuccess = false;
+                                account.Result = $"ID 혹은 비밀번호가 틀렸습니다.";
+                                log.DisplayLog("로그인 실패..");
+                            }
+                            return account;
                         }
                     }
                 }
@@ -256,7 +248,8 @@ namespace Project_11_Server.Controller
             catch (Exception ex)
             {
                 log.DisplayLog($"로그인 시도 중 오류 발생: {ex.Message}");
-                return false;
+                account.IsSuccess = false;
+                return account;
             }
         }
     }

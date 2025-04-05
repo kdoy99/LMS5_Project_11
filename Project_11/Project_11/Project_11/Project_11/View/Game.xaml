@@ -62,7 +62,7 @@
 
         <Grid Grid.Row="1" Grid.Column="3" Margin="10,10,10,10">
             <TextBox x:Name="Game_ID" 
-                     Text="{Binding Game_Account.ID}" 
+                     Text="{Binding Game_Account.Name}" 
                      FontSize="14" 
                      VerticalContentAlignment="Center" 
                      BorderBrush="Black" 
