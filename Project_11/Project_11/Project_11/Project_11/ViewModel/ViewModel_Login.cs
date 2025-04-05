@@ -70,7 +70,6 @@ namespace Project_11.ViewModel
                         UserAccount = JsonConvert.DeserializeObject<Account>(receivedMessage);
 
                         DisplayMessage(UserAccount.Result);
-                        MessageBox.Show(receivedMessage);
                         if (UserAccount.IsSuccess) // 로그인 완료
                         {
                             ViewModel_Game viewModel = new ViewModel_Game(UserAccount);
