@@ -77,7 +77,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListBox x:Name="ChatBox" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <ListBox x:Name="UserStatus" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
 
         <ListView x:Name="OnlineUserList" Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
@@ -86,7 +86,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListBox Name="UserStatus" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <ListBox Name="ChatBox" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10"
+                 ItemsSource="{Binding ChatMessages}"/>
         <Button x:Name="CreateGameRoom" Grid.Row="7" Grid.Column="3" Content="방 만들기" Margin="10,10,10,10"/>
         <TextBox x:Name="ChatInput" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,10,10"
                  Text="{Binding ChatMessage, UpdateSourceTrigger=PropertyChanged}"

@@ -60,6 +60,7 @@ namespace Project_11_GameServer.Controller
         private byte[] _buffer = new byte[2048];
 
         private Status status;
+        private Data data;
         private Log log = new Log();
 
         public ClientHandler(TcpClient client, Game_Server server)
@@ -108,7 +109,7 @@ namespace Project_11_GameServer.Controller
                     UserStatus(json);
                     break;
                 case "Chat":
-                    Send(json);
+                    _server.Broadcast(json);
                     break;
                 case "UserList":
 

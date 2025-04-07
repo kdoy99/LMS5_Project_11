@@ -10,6 +10,7 @@ using Project_11.Model;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
 
 namespace Project_11.ViewModel
 {
@@ -33,6 +34,7 @@ namespace Project_11.ViewModel
                 OnPropertyChanged(nameof(Game_Account));
             }
         }
+        public ObservableCollection<string> ChatMessages { get; set; } = new();
 
         private string _chatMessage;
         public string ChatMessage
@@ -65,6 +67,41 @@ namespace Project_11.ViewModel
             return !string.IsNullOrWhiteSpace(ChatMessage);
         }
 
+        private async Task ListenAsync()
+        {
+            byte[] buffer = new byte[2048];
+
+            try
+            {
+                while (true)
+                {
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0)
+                        break;
+
+                    string json = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    var data = JsonConvert.DeserializeObject<Data>(json);
+
+                    switch (data.Type)
+                    {
+                        case "Chat":
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                ChatMessages.Add($"[{data.Sender}] {data.Content}");
+                            });
+                            break;
+                        case "UserInfo":
+
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"데이터 수신 실패: {ex.Message}");
+            }
+        }
+
         public async void OnLoaded()
         {
             await ConnectToGameServer();
@@ -77,16 +114,19 @@ namespace Project_11.ViewModel
                 _client = new TcpClient();
                 await _client.ConnectAsync(address, port);
                 _stream = _client.GetStream();
+
+                var loginData = new
+                {
+                    Type = "UserInfo",
+                    ID = Game_Account.ID
+                };
                 
                 string json = JsonConvert.SerializeObject(Game_Account);
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 await _stream.WriteAsync(data, 0, data.Length);
 
                 // 서버 응답 기다리는 부분
-                byte[] buffer = new byte[1024];
-                int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-                string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                // Console.WriteLine($"게임 서버 응답: {response}"); // 미완
+                await Task.Run(ListenAsync);
             }
             catch (Exception ex)
             {
