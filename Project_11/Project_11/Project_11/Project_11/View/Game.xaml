@@ -8,7 +8,17 @@
         Loaded="Window_Loaded"
 
         Title="Game" Height="750" Width="1000">
+    <Window.Resources>
+        <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="2" BlurRadius="4" Color="Gray"/>
+        <DropShadowEffect x:Key="ChatShadow"
+                        Color="Black"
+                        Direction="320"
+                        ShadowDepth="2"
+                        BlurRadius="4"
+                        Opacity="0.2"/>
+    </Window.Resources>
 
+    
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
@@ -60,16 +70,83 @@
             </Label.Effect>
         </Label>
 
-        <Grid Grid.Row="1" Grid.Column="3" Margin="10,10,10,10">
-            <TextBox x:Name="Game_ID" 
-                     Text="{Binding Game_Account.Name}" 
-                     FontSize="14" 
-                     VerticalContentAlignment="Center" 
-                     BorderBrush="Black" 
-                     BorderThickness="2"
-                     />
+        <Grid Grid.Row="1" Grid.Column="3" Margin="10">
+            <Border
+                Background="#FFF"
+                CornerRadius="15"
+                BorderThickness="2"
+                BorderBrush="#888"
+                Padding="10"
+                Effect="{DynamicResource DropShadowEffect}">
+
+                <TextBox x:Name="Game_ID" 
+                         Text="{Binding Game_Account.ID}" 
+                         FontSize="12"
+                         FontFamily="Segoe UI"
+                         FontWeight="Bold"
+                         Foreground="#333"
+                         VerticalContentAlignment="Center"
+                         HorizontalContentAlignment="Center"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         IsReadOnly="True"
+                         Cursor="Arrow"/>
+            </Border>
         </Grid>
-        <Button x:Name="LogOut" Grid.Row="1" Grid.Column="4" Content="로그아웃" Margin="10,10,10,10"/>
+        <Grid Grid.Row="1" Grid.Column="4" Margin="10,10,10,10">
+            <Border Background="#2C3E50"
+                    BorderBrush="Black"
+                    BorderThickness="0"
+                    CornerRadius="20"
+                    Padding="8"
+>
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="10"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <Button x:Name="LogOut"
+                        Command="{Binding Command_SignUp}"
+                        Content="로그아웃" 
+                        BorderThickness="0"
+                        Background="#2C3E50"
+                        FontWeight="Bold"
+                        FontFamily="Arial"
+                        Foreground="#ECF0F1"
+                        FontSize="12"
+                        VerticalContentAlignment="Center">
+
+                    <!-- Hover 효과 제거 -->
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#2C3E50"/>
+                            <Setter Property="Foreground" Value="#ECF0F1"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontFamily" Value="Arial"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+                            <!-- 기본 버튼 템플릿 -->
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                Padding="5"
+                                                CornerRadius="10">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Border>
+        </Grid>
+
         <ListView x:Name="GameRoomList" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="3" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
                 <GridView>
@@ -77,7 +154,35 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListBox x:Name="UserStatus" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <ListBox x:Name="UserStatus" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2"
+                 ItemsSource="{Binding UserStatusModel}" BorderThickness="0"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                 Background="Transparent">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="12" Background="#FFF" Padding="15" Margin="10"
+                            BorderBrush="#DDD" BorderThickness="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Effect="{StaticResource DropShadowEffect}"
+                            Width="280" Height="200"
+                            >
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Margin="0 0 0 10"/>
+                            <WrapPanel>
+                                <TextBlock Text="{Binding TotalMatch, StringFormat=총 경기: {0}}" Margin="0 0 15 0"/>
+                                <TextBlock Text="{Binding Win, StringFormat=승: {0}}" Margin="0 0 15 0"/>
+                                <TextBlock Text="{Binding Lose, StringFormat=패: {0}}" Margin="0 0 15 0"/>
+                                <TextBlock Text="{Binding WinRate, StringFormat=승률: {0:F1}%}" Margin="0 0 15 0"/>
+                            </WrapPanel>
+                            <TextBlock Text="{Binding Rating, StringFormat=점수: {0}}" FontWeight="SemiBold" Foreground="#3A3A3A"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <ListView x:Name="OnlineUserList" Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
@@ -86,11 +191,142 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListBox Name="ChatBox" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10"
-                 ItemsSource="{Binding ChatMessages}"/>
-        <Button x:Name="CreateGameRoom" Grid.Row="7" Grid.Column="3" Content="방 만들기" Margin="10,10,10,10"/>
-        <TextBox x:Name="ChatInput" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10,10,10,10"
-                 Text="{Binding ChatMessage, UpdateSourceTrigger=PropertyChanged}"
-                 KeyDown="ChatInput_KeyDown"/>
+        <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Border Background="#F9F9F9"
+                    BorderBrush="#DDD"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Margin="10,10,10,0"
+                    Padding="10">
+                <ListBox Name="ChatBox" 
+                         ItemsSource="{Binding ChatMessages}" 
+                         Background="#F9F9F9"
+                         BorderBrush="#DDD"
+                         BorderThickness="0"
+                         Padding="10"
+                         FontFamily="Segoe UI"
+                         FontSize="12"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" Loaded="ChatBox_Loaded">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#FFFFFF"
+                                    CornerRadius="10"
+                                    Padding="8"
+                                    Margin="0 4"
+                                    BorderBrush="#CCC"
+                                    BorderThickness="1"
+                                    Effect="{DynamicResource ChatShadow}">
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="#333"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <ListBox.Resources>
+                        <Style TargetType="ScrollBar">
+                            <Setter Property="Width" Value="6"/>
+                            <Setter Property="Background" Value="#EEE"/>
+                            <Setter Property="Foreground" Value="#999"/>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+        </Grid>
+        
+        <Grid Grid.Row="7" Grid.Column="3" Margin="10,10,10,10">
+            <Border Background="#2C3E50"
+                    BorderBrush="Black"
+                    BorderThickness="0"
+                    CornerRadius="20"
+                    Padding="8"
+>
+                <Border.Effect>
+                    <DropShadowEffect Color="Black"
+                                      BlurRadius="10"
+                                      ShadowDepth="10"
+                                      Opacity="0.5"
+                                      />
+                </Border.Effect>
+                <Button x:Name="CreateGameRoom"
+                        Command="{Binding Command_SignUp}"
+                        Content="방 만들기" 
+                        BorderThickness="0"
+                        Background="#2C3E50"
+                        FontWeight="Bold"
+                        FontFamily="Arial"
+                        Foreground="#ECF0F1"
+                        FontSize="12"
+                        VerticalContentAlignment="Center">
+
+                    <!-- Hover 효과 제거 -->
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#2C3E50"/>
+                            <Setter Property="Foreground" Value="#ECF0F1"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontFamily" Value="Arial"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+                            <!-- 기본 버튼 템플릿 -->
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                Padding="5"
+                                                CornerRadius="10">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Margin="10">
+            <Border CornerRadius="12"
+                    Background="#F8F8F8"
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1"
+                    Padding="8"
+                    Effect="{DynamicResource DropShadowEffect}">
+
+                <Grid>
+                    <TextBox x:Name="ChatInput"
+                             Text="{Binding ChatMessage, UpdateSourceTrigger=PropertyChanged}"
+                             KeyDown="ChatInput_KeyDown"
+                             FontSize="12"
+                             FontFamily="Segoe UI"
+                             VerticalContentAlignment="Center"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="#333333"
+                             ToolTip="Enter 키로 메시지를 전송합니다"
+                             />
+
+                    <!-- Enter 아이콘 또는 힌트 텍스트 (오른쪽 아래 정렬) -->
+                    <TextBlock Text="↩"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="#999"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Bottom"
+                               Margin="0,0,4,2"
+                               IsHitTestVisible="False"/>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

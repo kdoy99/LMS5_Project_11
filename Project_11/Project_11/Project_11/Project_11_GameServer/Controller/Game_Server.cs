@@ -106,7 +106,19 @@ namespace Project_11_GameServer.Controller
             switch(data.Type)
             {
                 case "UserInfo":
-                    UserStatus(json);
+                    var status = UserStatus(data.ID);
+                    var response = new Data
+                    {
+                        Type = "UserInfo",
+                        ID = status.ID,
+                        Name = status.Name,
+                        TotalMatch = status.TotalMatch,
+                        Win = status.Win,
+                        Lose = status.Lose,
+                        Rating = status.Rating
+                    };
+                    string userInfo = JsonConvert.SerializeObject(response);
+                    Send(userInfo);
                     break;
                 case "Chat":
                     _server.Broadcast(json);
@@ -129,10 +141,8 @@ namespace Project_11_GameServer.Controller
             }
         }
 
-        public Status UserStatus(string json)
+        public Status UserStatus(string id)
         {
-            var data = JsonConvert.DeserializeObject<Data>(json);
-
             Status userStatus = null;
 
             using (MySqlConnection connection = new MySqlConnection("Server=localhost;Database=project_11;Uid=root;Pwd=1234;"))
@@ -140,11 +150,11 @@ namespace Project_11_GameServer.Controller
                 connection.Open();
                 // 유저 정보 테이블 생성
 
-                string statusQuery = "SELECT ID, Name, Match, Win, Lose, Rating FROM status WHERE ID = @ID";
+                string statusQuery = "SELECT ID, Name, TotalMatch, Win, Lose, Rating FROM status WHERE ID = @ID";
 
                 using (MySqlCommand cmd = new MySqlCommand(statusQuery, connection))
                 {
-                    cmd.Parameters.AddWithValue("@ID", data.ID);
+                    cmd.Parameters.AddWithValue("@ID", id);
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -154,7 +164,7 @@ namespace Project_11_GameServer.Controller
                             {
                                 ID = reader.GetString("ID"),
                                 Name = reader.GetString("Name"),
-                                TotalMatch = reader.GetInt32("Match"),
+                                TotalMatch = reader.GetInt32("TotalMatch"),
                                 Win = reader.GetInt32("Win"),
                                 Lose = reader.GetInt32("Lose"),
                                 Rating = reader.GetInt32("Rating")

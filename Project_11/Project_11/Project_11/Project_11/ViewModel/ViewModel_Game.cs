@@ -36,6 +36,8 @@ namespace Project_11.ViewModel
         }
         public ObservableCollection<string> ChatMessages { get; set; } = new();
 
+        public ObservableCollection<Status> UserStatusModel { get; set; } = new();
+
         private string _chatMessage;
         public string ChatMessage
         {
@@ -91,7 +93,19 @@ namespace Project_11.ViewModel
                             });
                             break;
                         case "UserInfo":
-
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                UserStatusModel.Clear();
+                                UserStatusModel.Add(new Status
+                                {
+                                    Name = data.Name,
+                                    TotalMatch = data.TotalMatch,
+                                    Win = data.Win,
+                                    Lose = data.Lose,
+                                    Rate = data.TotalMatch > 0 ? data.TotalMatch / data.Win * 100 : 0,
+                                    Rating = data.Rating,
+                                });
+                            });
                             break;
                     }
                 }
@@ -115,13 +129,13 @@ namespace Project_11.ViewModel
                 await _client.ConnectAsync(address, port);
                 _stream = _client.GetStream();
 
-                var loginData = new
+                var loginData = new Data
                 {
                     Type = "UserInfo",
                     ID = Game_Account.ID
                 };
                 
-                string json = JsonConvert.SerializeObject(Game_Account);
+                string json = JsonConvert.SerializeObject(loginData);
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 await _stream.WriteAsync(data, 0, data.Length);
 

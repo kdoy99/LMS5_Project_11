@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Project_11.Model;
 using Project_11.ViewModel;
+using System.Collections.Specialized;
 
 namespace Project_11.View
 {
@@ -52,6 +53,20 @@ namespace Project_11.View
 
                 ChatInput.Focus(); // 포커스 조정
                 e.Handled = true; // 기존 엔터 동작 방지
+            }
+        }
+
+        private void ChatBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ChatBox.ItemsSource is INotifyCollectionChanged collection)
+            {
+                collection.CollectionChanged += (s, args) =>
+                {
+                    if (ChatBox.Items.Count > 0)
+                    {
+                        ChatBox.ScrollIntoView(ChatBox.Items[ChatBox.Items.Count - 1]);
+                    }
+                };
             }
         }
     }
