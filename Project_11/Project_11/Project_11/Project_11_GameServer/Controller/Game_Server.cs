@@ -114,6 +114,9 @@ namespace Project_11_GameServer.Controller
             {
                 _client.Close();
                 _server.RemoveClient(this);
+                // 종료시에도 유저 목록 전송
+                string userJson = UserList();
+                _server.Broadcast(userJson);
             }
         }
 
@@ -123,16 +126,13 @@ namespace Project_11_GameServer.Controller
 
             switch(data.Type)
             {
-                case "UserInfo":
+                case "UserInfo": // 유저별 전적, 유저 리스트 전송
                     UserStatus(data.ID);
                     string userJson = UserList();
                     _server.Broadcast(userJson);
                     break;
-                case "Chat":
+                case "Chat": // 채팅 전송
                     _server.Broadcast(json);
-                    break;
-                case "UserList":
-
                     break;
                 case "RoomList":
 

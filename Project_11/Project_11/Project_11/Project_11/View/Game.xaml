@@ -187,7 +187,7 @@
         <Grid Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10">
             <Border Background="#F3F3F3"
                     BorderBrush="#D0D0D0"
-                    BorderThickness="1"
+                    BorderThickness="0"
                     CornerRadius="10"
                     Padding="10">
                 <StackPanel>
@@ -200,9 +200,12 @@
                              ItemsSource="{Binding OnlineUsers}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name}"
-                                           FontSize="14"
-                                           />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text=" ["/>
+                                    <TextBlock Text="{Binding Rating}"/>
+                                    <TextBlock Text="]"/>
+                                </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

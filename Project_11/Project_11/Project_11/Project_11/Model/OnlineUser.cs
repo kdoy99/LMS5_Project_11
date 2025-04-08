@@ -8,7 +8,7 @@ namespace Project_11.Model
 {
     public class OnlineUser
     {
-        public string UserName { get; set; }
+        public string Name { get; set; }
         public string Rating { get; set; }
     }
 }

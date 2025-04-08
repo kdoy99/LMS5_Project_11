@@ -92,7 +92,7 @@ namespace Project_11.ViewModel
                         case "UserInfo":
                             UserStatus(json);
                             break;
-                        case "OnlineUser":
+                        case "UserList":
                             CurrentUser(json);
                             break;
                     }
@@ -199,7 +199,7 @@ namespace Project_11.ViewModel
                 {
                     OnlineUsers.Add(new OnlineUser
                     {
-                        UserName = user.UserName,
+                        Name = user.Name,
                         Rating = user.Rating
                     });
                 }
