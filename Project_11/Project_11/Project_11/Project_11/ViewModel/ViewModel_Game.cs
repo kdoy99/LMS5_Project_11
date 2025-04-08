@@ -35,8 +35,8 @@ namespace Project_11.ViewModel
             }
         }
         public ObservableCollection<string> ChatMessages { get; set; } = new();
-
         public ObservableCollection<Status> UserStatusModel { get; set; } = new();
+        public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
 
         private string _chatMessage;
         public string ChatMessage
@@ -87,25 +87,13 @@ namespace Project_11.ViewModel
                     switch (data.Type)
                     {
                         case "Chat":
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                ChatMessages.Add($"[{data.Sender}] {data.Content}");
-                            });
+                            Chat(json);
                             break;
                         case "UserInfo":
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                UserStatusModel.Clear();
-                                UserStatusModel.Add(new Status
-                                {
-                                    Name = data.Name,
-                                    TotalMatch = data.TotalMatch,
-                                    Win = data.Win,
-                                    Lose = data.Lose,
-                                    Rate = data.TotalMatch > 0 ? data.TotalMatch / data.Win * 100 : 0,
-                                    Rating = data.Rating,
-                                });
-                            });
+                            UserStatus(json);
+                            break;
+                        case "OnlineUser":
+                            CurrentUser(json);
                             break;
                     }
                 }
@@ -171,9 +159,51 @@ namespace Project_11.ViewModel
             }
         }
 
-        public void CurrentUser(object obj)
+        public void Chat(string json)
         {
-            
+            var data = JsonConvert.DeserializeObject<Data>(json);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ChatMessages.Add($"[{data.Sender}] {data.Content}");
+            });
+        }
+
+        public void UserStatus(string json)
+        {
+            var data = JsonConvert.DeserializeObject<Data>(json);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                UserStatusModel.Clear();
+                UserStatusModel.Add(new Status
+                {
+                    Name = data.Name,
+                    TotalMatch = data.TotalMatch,
+                    Win = data.Win,
+                    Lose = data.Lose,
+                    Rate = data.TotalMatch > 0 ? data.TotalMatch / data.Win * 100 : 0,
+                    Rating = data.Rating,
+                });
+            });
+        }
+
+        public void CurrentUser(string json)
+        {
+            var data = JsonConvert.DeserializeObject<Data>(json);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                OnlineUsers.Clear();
+                foreach (var user in data.Users)
+                {
+                    OnlineUsers.Add(new OnlineUser
+                    {
+                        UserName = user.UserName,
+                        Rating = user.Rating
+                    });
+                }
+            });
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

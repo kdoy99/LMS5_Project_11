@@ -17,5 +17,7 @@ namespace Project_11_GameServer.Model
         public int Win { get; set; } // 승리 횟수
         public int Lose { get; set; } // 패배 횟수
         public int Rating { get; set; } // 점수
+        public List<OnlineUser>? Users { get; set; } // 접속 중인 유저 리스트
+
     }
 }

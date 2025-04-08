@@ -23,6 +23,17 @@ namespace Project_11_GameServer.Controller
 
         private Log log = new Log();
 
+        public List<OnlineUser> OnlineUsers()
+        {
+            return _clients
+                .Where(c => !string.IsNullOrEmpty(c.Name))
+                .Select(c => new OnlineUser
+                {
+                    Name = c.Name,
+                    Rating = c.Rating
+                }).ToList();
+        }
+
         public async Task StartServer()
         {
             _listener = new TcpListener(IPAddress.Any, port);
@@ -38,11 +49,11 @@ namespace Project_11_GameServer.Controller
             }
         }
 
-        public void Broadcast(string message)
+        public void Broadcast(string json)
         {
             foreach (var client in _clients)
             {
-                client.Send(message);
+                client.Send(json);
             }
         }
 
@@ -52,16 +63,23 @@ namespace Project_11_GameServer.Controller
         }
     }
 
-    public class ClientHandler
+    // 의존성 분리
+    public interface INetwork
+    {
+        void Send(string json);
+    }
+
+    public class ClientHandler : INetwork
     {
         private TcpClient _client;
         private NetworkStream _stream;
         private Game_Server _server;
         private byte[] _buffer = new byte[2048];
 
-        private Status status;
-        private Data data;
         private Log log = new Log();
+
+        public string Name { get; set; } // 유저 리스트 용, 닉네임
+        public int Rating { get; set; } // 유저 리스트 용, 점수
 
         public ClientHandler(TcpClient client, Game_Server server)
         {
@@ -106,19 +124,9 @@ namespace Project_11_GameServer.Controller
             switch(data.Type)
             {
                 case "UserInfo":
-                    var status = UserStatus(data.ID);
-                    var response = new Data
-                    {
-                        Type = "UserInfo",
-                        ID = status.ID,
-                        Name = status.Name,
-                        TotalMatch = status.TotalMatch,
-                        Win = status.Win,
-                        Lose = status.Lose,
-                        Rating = status.Rating
-                    };
-                    string userInfo = JsonConvert.SerializeObject(response);
-                    Send(userInfo);
+                    UserStatus(data.ID);
+                    string userJson = UserList();
+                    _server.Broadcast(userJson);
                     break;
                 case "Chat":
                     _server.Broadcast(json);
@@ -141,7 +149,7 @@ namespace Project_11_GameServer.Controller
             }
         }
 
-        public Status UserStatus(string id)
+        private void UserStatus(string id)
         {
             Status userStatus = null;
 
@@ -173,13 +181,49 @@ namespace Project_11_GameServer.Controller
                     }
                 }
             }
-            return userStatus;
+            var status = userStatus;
+            // 유저 리스트용
+            Name = status.Name;
+            Rating = status.Rating;
+
+            var response = new Data
+            {
+                Type = "UserInfo",
+                ID = status.ID,
+                Name = status.Name,
+                TotalMatch = status.TotalMatch,
+                Win = status.Win,
+                Lose = status.Lose,
+                Rating = status.Rating
+            };
+            string userInfo = JsonConvert.SerializeObject(response);
+            Send(userInfo);
+        }
+        
+        private string UserList()
+        {
+            var users = _server.OnlineUsers();
+
+            var response = new Data
+            {
+                Type = "UserList",
+                Users = users
+            };
+
+            return JsonConvert.SerializeObject(response);
         }
 
-        public void Send(string json)
+        public async void Send(string json)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(json);
-            _stream.WriteAsync(bytes, 0, bytes.Length);
+            try
+            {
+                await _stream.WriteAsync(bytes, 0, bytes.Length);
+            }
+            catch (Exception ex)
+            {
+                log.DisplayLog($"메시지 전송 실패: {ex.Message}");
+            }
         }
     }
 }

@@ -184,13 +184,32 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <ListView x:Name="OnlineUserList" Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10,10,10,10" d:ItemsSource="{d:SampleData ItemCount=5}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10">
+            <Border Background="#F3F3F3"
+                    BorderBrush="#D0D0D0"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="10">
+                <StackPanel>
+                    <TextBlock Text="접속 중인 유저"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,8"
+                               />
+                    <ListBox x:Name="OnlineUserList" Grid.Row="4" Grid.Column="3" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="10,10,10,10"
+                             ItemsSource="{Binding OnlineUsers}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                           FontSize="14"
+                                           />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
         <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2">
             <Border Background="#F9F9F9"
                     BorderBrush="#DDD"
@@ -316,7 +335,7 @@
                              ToolTip="Enter 키로 메시지를 전송합니다"
                              />
 
-                    <!-- Enter 아이콘 또는 힌트 텍스트 (오른쪽 아래 정렬) -->
+                    <!-- Enter 아이콘 (오른쪽 아래 정렬) -->
                     <TextBlock Text="↩"
                                FontSize="14"
                                FontWeight="Bold"
