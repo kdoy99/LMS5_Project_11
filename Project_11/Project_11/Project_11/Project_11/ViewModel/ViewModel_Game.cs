@@ -23,7 +23,8 @@ namespace Project_11.ViewModel
         private NetworkStream _stream;
 
         public ICommand SendMessageCommand { get; set; } // 메시지 전송용 커맨드
-        public ICommand CreateRoomCommand { get; } // 방 생성용 커맨드
+        public ICommand CreateRoomCommand { get; } // 게임방 생성창 띄우는 커맨드
+        public ICommand CreateGameRoomCommand { get; set; } // 게임방 생성, 창으로 이동하는 커맨드
         public ICommand LogOutCommand { get; } // 로그아웃
 
         private Account _Game_Account;
@@ -67,6 +68,7 @@ namespace Project_11.ViewModel
             Game_Account = account;
             SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
             CreateRoomCommand = new RelayCommand(CreateRoom);
+            //CreateGameRoomCommand = new RelayCommand();
             LogOutCommand = new RelayCommand(LogOut);
         }
 
@@ -103,6 +105,9 @@ namespace Project_11.ViewModel
             }
             catch (Exception ex)
             {
+                if (_client == null || _client?.Connected == false || ex is ObjectDisposedException)
+                    return;
+
                 ShowErrorMessage($"데이터 수신 실패: {ex.Message}");
             }
         }

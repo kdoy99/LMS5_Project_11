@@ -8,6 +8,9 @@
     <Compile Update="View\Game.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\GameRoom.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\SignUp.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
