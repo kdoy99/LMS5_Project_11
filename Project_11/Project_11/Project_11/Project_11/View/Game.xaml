@@ -150,12 +150,27 @@
                 <ListView x:Name="GameRoomList"
                           Background="Transparent"
                           BorderThickness="0"
-                          d:ItemsSource="{d:SampleData ItemCount=5}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn/>
-                        </GridView>
-                    </ListView.View>
+                          ItemsSource="{Binding RoomList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#333"
+                                           />
+                                <TextBlock Text="{Binding HostInfo}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#333"
+                                           />
+                                <TextBlock Text="{Binding DisplayTime}"
+                                           FontSize="11"
+                                           Foreground="#888"
+                                           />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </Border>
         </Grid>
