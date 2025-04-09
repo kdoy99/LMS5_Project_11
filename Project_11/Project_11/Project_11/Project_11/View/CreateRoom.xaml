@@ -138,7 +138,7 @@
                               />
                 </Border.Effect>
                 <Button x:Name="Create_Button"
-                        Command="{Binding Create}"
+                        Command="{Binding CreateRoomCommand}"
                         Content="생성하기" 
                         BorderThickness="0"
                         Background="#2C3E50"

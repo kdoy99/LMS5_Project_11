@@ -11,18 +11,20 @@ using System.ComponentModel;
 using Newtonsoft.Json;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using Project_11.View;
 
 namespace Project_11.ViewModel
 {
-    public class ViewModel_Game : INotifyPropertyChanged
+    public class ViewModel_Game : BaseViewModel
     {
         private string address = "127.0.0.1";
         private int port = 0002;
         private TcpClient _client;
         private NetworkStream _stream;
 
-        public ICommand ConnectCommand { get; set; }
         public ICommand SendMessageCommand { get; set; } // 메시지 전송용 커맨드
+        public ICommand CreateRoomCommand { get; } // 방 생성용 커맨드
+        public ICommand LogOutCommand { get; } // 로그아웃
 
         private Account _Game_Account;
         public Account Game_Account
@@ -37,6 +39,17 @@ namespace Project_11.ViewModel
         public ObservableCollection<string> ChatMessages { get; set; } = new();
         public ObservableCollection<Status> UserStatusModel { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
+
+        private string _roomTitle;
+        public string RoomTitle
+        {
+            get => _roomTitle;
+            set
+            {
+                _roomTitle = value;
+                OnPropertyChanged(nameof(RoomTitle));
+            }
+        }
 
         private string _chatMessage;
         public string ChatMessage
@@ -53,21 +66,11 @@ namespace Project_11.ViewModel
         {
             Game_Account = account;
             SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
+            CreateRoomCommand = new RelayCommand(CreateRoom);
+            LogOutCommand = new RelayCommand();
         }
 
-        private void SendMessage()
-        {
-            if (!string.IsNullOrWhiteSpace(ChatMessage))
-            {
-                SendToServer(ChatMessage);
-                ChatMessage = string.Empty; // 입력창 초기화
-            }
-        }
-
-        private bool CanSendMessage()
-        {
-            return !string.IsNullOrWhiteSpace(ChatMessage);
-        }
+        
 
         private async Task ListenAsync()
         {
@@ -100,7 +103,7 @@ namespace Project_11.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"데이터 수신 실패: {ex.Message}");
+                ShowErrorMessage($"데이터 수신 실패: {ex.Message}");
             }
         }
 
@@ -132,10 +135,23 @@ namespace Project_11.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"게임 서버 연결 실패: {ex.Message}");
+                ShowErrorMessage($"게임 서버 연결 실패: {ex.Message}");
+            }
+        }
+        // 채팅
+        private void SendMessage()
+        {
+            if (!string.IsNullOrWhiteSpace(ChatMessage))
+            {
+                SendToServer(ChatMessage);
+                ChatMessage = string.Empty; // 입력창 초기화
             }
         }
 
+        private bool CanSendMessage()
+        {
+            return !string.IsNullOrWhiteSpace(ChatMessage);
+        }
         private void SendToServer(string message)
         {
             if (_client != null && _client.Connected)
@@ -154,11 +170,11 @@ namespace Project_11.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"메시지 전송 실패: {ex.Message}");
+                    ShowErrorMessage($"메시지 전송 실패: {ex.Message}");
                 }
             }
         }
-
+        
         public void Chat(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
@@ -168,7 +184,7 @@ namespace Project_11.ViewModel
                 ChatMessages.Add($"[{data.Sender}] {data.Content}");
             });
         }
-
+        // 유저 전적 정보
         public void UserStatus(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
@@ -187,7 +203,7 @@ namespace Project_11.ViewModel
                 });
             });
         }
-
+        // 접속 중 유저 메소드
         public void CurrentUser(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
@@ -205,11 +221,52 @@ namespace Project_11.ViewModel
                 }
             });
         }
+        // 중복 윈도우 방지용 필드
+        private Window? _createRoomWindow;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        // 방 생성 메소드
+        private void CreateRoom()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (_createRoomWindow == null || !_createRoomWindow.IsVisible)
+            {
+                _createRoomWindow = new CreateRoom();
+                _createRoomWindow.Show();
+            }
+            else
+            {
+                _createRoomWindow.Activate(); // 이미 열려 있는 창을 앞으로
+            }
+            
+        }
+
+        // 로그아웃
+        private void LogOut()
+        {
+            try
+            {
+                _stream?.Close();
+                _client?.Close();
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is Game)
+                        {
+                            ShowMessage($"안녕히 가십시오 {Game_Account.Name} 님!");
+                            window.Close();
+                            break;
+                        }
+                    }
+
+                    var loginWindow = new Login();
+                    loginWindow.Show();
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"로그아웃 실패: {ex.Message}");
+            }
         }
     }
 }
