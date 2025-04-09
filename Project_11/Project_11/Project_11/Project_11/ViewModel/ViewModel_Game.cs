@@ -67,7 +67,7 @@ namespace Project_11.ViewModel
             Game_Account = account;
             SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
             CreateRoomCommand = new RelayCommand(CreateRoom);
-            LogOutCommand = new RelayCommand();
+            LogOutCommand = new RelayCommand(LogOut);
         }
 
         
