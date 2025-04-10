@@ -23,6 +23,7 @@ namespace Project_11_GameServer.Controller
 
         private Log log = new Log();
 
+        // 온라인 유저 리스트
         public List<OnlineUser> OnlineUsers()
         {
             return _clients
@@ -32,6 +33,19 @@ namespace Project_11_GameServer.Controller
                     Name = c.Name,
                     Rating = c.Rating
                 }).ToList();
+        }
+
+        // 현재 존재하는 게임방 리스트
+        private List<Data> _rooms = new();
+
+        public void AddRoom(Data roomData)
+        {
+            _rooms.Add(roomData);
+        }
+
+        public List<Data> GetRoomList()
+        {
+            return _rooms;
         }
 
         public async Task StartServer()
@@ -112,10 +126,11 @@ namespace Project_11_GameServer.Controller
             }
             finally
             {
-                _client.Close();
+                _stream.Dispose();
+                _client.Dispose();
                 _server.RemoveClient(this);
                 // 종료시에도 유저 목록 전송
-                string userJson = UserList();
+                string userJson = InfoList();
                 _server.Broadcast(userJson);
             }
         }
@@ -126,19 +141,16 @@ namespace Project_11_GameServer.Controller
 
             switch(data.Type)
             {
-                case "UserInfo": // 유저별 전적, 유저 리스트 전송
+                case "UserInfo": // 유저별 전적, 유저 리스트, 게임방 리스트 전송
                     UserStatus(data.ID);
-                    string userJson = UserList();
+                    string userJson = InfoList();
                     _server.Broadcast(userJson);
                     break;
                 case "Chat": // 채팅 전송
                     _server.Broadcast(json);
                     break;
-                case "RoomList":
-
-                    break;
                 case "Create_Room":
-
+                    HandleCreateRoom(data);
                     break;
                 case "Game":
 
@@ -200,17 +212,39 @@ namespace Project_11_GameServer.Controller
             Send(userInfo);
         }
         
-        private string UserList()
+        private string InfoList()
         {
             var users = _server.OnlineUsers();
+            var rooms = _server.GetRoomList();
+
 
             var response = new Data
             {
-                Type = "UserList",
-                Users = users
+                Type = "InfoList",
+                Users = users,
+                Rooms = rooms
             };
 
             return JsonConvert.SerializeObject(response);
+        }
+
+        private void HandleCreateRoom(Data data)
+        {
+            string title = data.Title;
+
+            var roomData = new Data
+            {
+                Type = "RoomList",
+                Title = data.Title,
+                RatingLimit = data.RatingLimit,
+                Host = data.Host,
+                CreatedTime = DateTime.Now.ToString("tt hh:mm")
+            };
+
+            _server.AddRoom(roomData);
+            
+            string broadcastJson = JsonConvert.SerializeObject(roomData);
+            _server.Broadcast(broadcastJson);
         }
 
         public async void Send(string json)

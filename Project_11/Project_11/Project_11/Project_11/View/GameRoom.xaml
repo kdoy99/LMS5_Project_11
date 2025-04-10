@@ -244,16 +244,16 @@
 
                 <Grid>
                     <TextBox x:Name="ChatInput"
-                     Text="{Binding GameChatCommand, UpdateSourceTrigger=PropertyChanged}"
-                     KeyDown="ChatInput_KeyDown"
-                     FontSize="12"
-                     FontFamily="Segoe UI"
-                     VerticalContentAlignment="Center"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Foreground="#333333"
-                     ToolTip="Enter 키로 메시지를 전송합니다"
-                     />
+                             Text="{Binding GameChatCommand, UpdateSourceTrigger=PropertyChanged}"
+                             KeyDown="ChatInput_KeyDown"
+                             FontSize="12"
+                             FontFamily="Segoe UI"
+                             VerticalContentAlignment="Center"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="#333333"
+                             ToolTip="Enter 키로 메시지를 전송합니다"
+                             />
 
                     <!-- Enter 아이콘 (오른쪽 아래 정렬) -->
                     <TextBlock Text="↩"

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Project_11.View;
+using System.Printing;
 
 namespace Project_11.ViewModel
 {
@@ -24,7 +25,7 @@ namespace Project_11.ViewModel
 
         public ICommand SendMessageCommand { get; set; } // 메시지 전송용 커맨드
         public ICommand CreateRoomCommand { get; } // 게임방 생성창 띄우는 커맨드
-        public ICommand CreateGameRoomCommand { get; set; } // 게임방 생성, 창으로 이동하는 커맨드
+        public ICommand CreateGameRoomCommand { get; } // 게임방 생성, 창으로 이동하는 커맨드
         public ICommand LogOutCommand { get; } // 로그아웃
 
         private Account _Game_Account;
@@ -40,6 +41,7 @@ namespace Project_11.ViewModel
         public ObservableCollection<string> ChatMessages { get; set; } = new();
         public ObservableCollection<Status> UserStatusModel { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
+        public ObservableCollection<Data> RoomList { get; set; } = new();
 
         private string _roomTitle;
         public string RoomTitle
@@ -49,6 +51,17 @@ namespace Project_11.ViewModel
             {
                 _roomTitle = value;
                 OnPropertyChanged(nameof(RoomTitle));
+            }
+        }
+
+        private string _ratingLimit;
+        public string RatingLimit
+        {
+            get => _ratingLimit;
+            set
+            {
+                _ratingLimit = value;
+                OnPropertyChanged(nameof(RatingLimit));
             }
         }
 
@@ -68,11 +81,9 @@ namespace Project_11.ViewModel
             Game_Account = account;
             SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
             CreateRoomCommand = new RelayCommand(CreateRoom);
-            //CreateGameRoomCommand = new RelayCommand();
+            CreateGameRoomCommand = new RelayCommand(EnterGame);
             LogOutCommand = new RelayCommand(LogOut);
         }
-
-        
 
         private async Task ListenAsync()
         {
@@ -94,11 +105,8 @@ namespace Project_11.ViewModel
                         case "Chat":
                             Chat(json);
                             break;
-                        case "UserInfo":
-                            UserStatus(json);
-                            break;
-                        case "UserList":
-                            CurrentUser(json);
+                        case "InfoList":
+                            HandleInfoList(json);
                             break;
                     }
                 }
@@ -163,11 +171,11 @@ namespace Project_11.ViewModel
             {
                 try
                 {
-                    string json = JsonConvert.SerializeObject(new
+                    string json = JsonConvert.SerializeObject(new Data
                     {
                         Type = "Chat",
                         Content = message,
-                        Sender = Game_Account.Name
+                        Name = Game_Account.Name
                     });
 
                     byte[] data = Encoding.UTF8.GetBytes(json);
@@ -186,11 +194,11 @@ namespace Project_11.ViewModel
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                ChatMessages.Add($"[{data.Sender}] {data.Content}");
+                ChatMessages.Add($"[{data.Name}] {data.Content}");
             });
         }
         // 유저 전적 정보
-        public void UserStatus(string json)
+        public void HandleInfoList(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
 
@@ -206,15 +214,7 @@ namespace Project_11.ViewModel
                     Rate = data.TotalMatch > 0 ? data.TotalMatch / data.Win * 100 : 0,
                     Rating = data.Rating,
                 });
-            });
-        }
-        // 접속 중 유저 메소드
-        public void CurrentUser(string json)
-        {
-            var data = JsonConvert.DeserializeObject<Data>(json);
 
-            Application.Current.Dispatcher.Invoke(() =>
-            {
                 OnlineUsers.Clear();
                 foreach (var user in data.Users)
                 {
@@ -224,8 +224,21 @@ namespace Project_11.ViewModel
                         Rating = user.Rating
                     });
                 }
+
+                RoomList.Clear();
+                foreach (var room in data.Rooms)
+                {
+                    RoomList.Add(new Data
+                    {
+                        Title = room.Title,
+                        RatingLimit = room.RatingLimit,
+                        Host = room.Host,
+                        CreatedTime = room.CreatedTime
+                    });
+                }
             });
         }
+
         // 중복 윈도우 방지용 필드
         private Window? _createRoomWindow;
 
@@ -242,6 +255,61 @@ namespace Project_11.ViewModel
                 _createRoomWindow.Activate(); // 이미 열려 있는 창을 앞으로
             }
             
+        }
+
+        private void EnterGame()
+        {
+            if (string.IsNullOrWhiteSpace(RoomTitle))
+            {
+                ShowMessage("방 제목을 입력해주세요.");
+                return;
+            }
+
+            int rating = 0;
+            if (!string.IsNullOrWhiteSpace(RatingLimit))
+            {
+                if (!int.TryParse(RatingLimit, out rating))
+                {
+                    ShowMessage("레이팅 제한은 숫자로 입력해주세요.");
+                    return;
+                }
+            }
+
+            SendRoomDataToServer(RoomTitle, rating.ToString());
+            OpenGameRoom();
+        }
+
+        private void SendRoomDataToServer(string title, string rating)
+        {
+            var roomData = new Data
+            {
+                Type = "CreateRoom",
+                Title = title,
+                RatingLimit = rating,
+                Host = Game_Account.Name
+            };
+
+            string json = JsonConvert.SerializeObject(roomData);
+            byte[] buffer = Encoding.UTF8.GetBytes(json);
+            _stream.Write(buffer, 0, buffer.Length);
+        }
+
+        private void OpenGameRoom()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is CreateRoom || window is Game)
+                    {
+                        window.Close();
+                    }
+                }
+
+                var gameRoom = new GameRoom();
+                gameRoom.DataContext = new ViewModel_Game(Game_Account);
+                gameRoom.Show();
+            });
         }
 
         // 로그아웃

@@ -60,7 +60,7 @@
                    FontFamily="Segoe UI"
                    Foreground="#ECF0F1"
                    FontWeight="Bold"
-                   FontSize="12"
+                   FontSize="10"
                    VerticalContentAlignment="Center"
                    VerticalAlignment="Bottom"
                    />
@@ -85,7 +85,6 @@
                          HorizontalContentAlignment="Center"
                          Background="Transparent"
                          BorderThickness="0"
-                         IsReadOnly="True"
                          Cursor="Arrow"/>
             </Border>
         </Grid>
@@ -94,7 +93,7 @@
                    FontFamily="Segoe UI"
                    Foreground="#ECF0F1"
                    FontWeight="Bold"
-                   FontSize="12"
+                   FontSize="10"
                    VerticalContentAlignment="Center"
                    VerticalAlignment="Bottom"
                    />
@@ -118,7 +117,6 @@
                          HorizontalContentAlignment="Center"
                          Background="Transparent"
                          BorderThickness="0"
-                         IsReadOnly="True"
                          Cursor="Arrow"/>
                         </Border>
         </Grid>

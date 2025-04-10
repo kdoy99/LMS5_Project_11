@@ -159,13 +159,18 @@
                                            FontWeight="Bold"
                                            Foreground="#333"
                                            />
-                                <TextBlock Text="{Binding HostInfo}"
+                                <TextBlock Text="{Binding RatingLimit}"
                                            FontSize="14"
                                            FontWeight="Bold"
                                            Foreground="#333"
                                            />
-                                <TextBlock Text="{Binding DisplayTime}"
-                                           FontSize="11"
+                                <TextBlock Text="{Binding Host}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#333"
+                                           />
+                                <TextBlock Text="{Binding CreatedTime}"
+                                           FontSize="14"
                                            Foreground="#888"
                                            />
                             </StackPanel>
