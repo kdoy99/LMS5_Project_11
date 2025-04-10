@@ -141,10 +141,8 @@ namespace Project_11_GameServer.Controller
 
             switch(data.Type)
             {
-                case "UserInfo": // 유저별 전적, 유저 리스트, 게임방 리스트 전송
-                    UserStatus(data.ID);
-                    string userJson = InfoList();
-                    _server.Broadcast(userJson);
+                case "InfoList": // 유저별 전적, 유저 리스트, 게임방 리스트 전송
+                    SendInfoList(data.ID);
                     break;
                 case "Chat": // 채팅 전송
                     _server.Broadcast(json);
@@ -161,7 +159,31 @@ namespace Project_11_GameServer.Controller
             }
         }
 
-        private void UserStatus(string id)
+        private void SendInfoList(string id)
+        {
+            var status = GetUserStatus(id);
+            var users = _server.OnlineUsers();
+            var rooms = _server.GetRoomList();
+
+
+            var response = new Data
+            {
+                Type = "InfoList",
+                ID = status.ID,
+                Name = status.Name,
+                TotalMatch = status.TotalMatch,
+                Win = status.Win,
+                Lose = status.Lose,
+                Rating = status.Rating,
+                Users = users,
+                Rooms = rooms
+            };
+
+            string json = JsonConvert.SerializeObject(response);
+            Send(json);
+        }
+
+        private Status GetUserStatus(string id)
         {
             Status userStatus = null;
 
@@ -193,39 +215,11 @@ namespace Project_11_GameServer.Controller
                     }
                 }
             }
-            var status = userStatus;
-            // 유저 리스트용
-            Name = status.Name;
-            Rating = status.Rating;
 
-            var response = new Data
-            {
-                Type = "UserInfo",
-                ID = status.ID,
-                Name = status.Name,
-                TotalMatch = status.TotalMatch,
-                Win = status.Win,
-                Lose = status.Lose,
-                Rating = status.Rating
-            };
-            string userInfo = JsonConvert.SerializeObject(response);
-            Send(userInfo);
-        }
-        
-        private string InfoList()
-        {
-            var users = _server.OnlineUsers();
-            var rooms = _server.GetRoomList();
+            Name = userStatus.Name;
+            Rating = userStatus.Rating;
 
-
-            var response = new Data
-            {
-                Type = "InfoList",
-                Users = users,
-                Rooms = rooms
-            };
-
-            return JsonConvert.SerializeObject(response);
+            return userStatus;
         }
 
         private void HandleCreateRoom(Data data)
@@ -242,9 +236,25 @@ namespace Project_11_GameServer.Controller
             };
 
             _server.AddRoom(roomData);
+            log.DisplayLog($"게임방 생성 완료! {roomData}");
             
             string broadcastJson = JsonConvert.SerializeObject(roomData);
             _server.Broadcast(broadcastJson);
+        }
+
+        private string InfoList()
+        {
+            var users = _server.OnlineUsers();
+            var rooms = _server.GetRoomList();
+
+            var response = new Data
+            {
+                Type = "InfoList",
+                Users = users,
+                Rooms = rooms
+            };
+
+            return JsonConvert.SerializeObject(response);
         }
 
         public async void Send(string json)

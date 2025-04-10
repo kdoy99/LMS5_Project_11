@@ -188,7 +188,7 @@
                     Effect="{StaticResource DropShadowEffect}"
                     Width="280" Height="200">
                 <ListBox x:Name="UserStatus"
-                         ItemsSource="{Binding UserStatusModel}" BorderThickness="0"
+                         ItemsSource="{Binding Status}" BorderThickness="0"
                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
                          Background="Transparent">

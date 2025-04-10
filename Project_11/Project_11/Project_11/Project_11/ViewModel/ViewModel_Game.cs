@@ -38,10 +38,13 @@ namespace Project_11.ViewModel
                 OnPropertyChanged(nameof(Game_Account));
             }
         }
+
         public ObservableCollection<string> ChatMessages { get; set; } = new();
-        public ObservableCollection<Status> UserStatusModel { get; set; } = new();
+        public ObservableCollection<Status> Status { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
         public ObservableCollection<Data> RoomList { get; set; } = new();
+        public ObservableCollection<Status> MeStatusModel { get; set; }
+        public ObservableCollection<Status> OpponentStatusModel { get; set; }
 
         private string _roomTitle;
         public string RoomTitle
@@ -83,6 +86,8 @@ namespace Project_11.ViewModel
             CreateRoomCommand = new RelayCommand(CreateRoom);
             CreateGameRoomCommand = new RelayCommand(EnterGame);
             LogOutCommand = new RelayCommand(LogOut);
+
+            MeStatusModel = new ObservableCollection<Status>();
         }
 
         private async Task ListenAsync()
@@ -107,6 +112,9 @@ namespace Project_11.ViewModel
                             break;
                         case "InfoList":
                             HandleInfoList(json);
+                            break;
+                        case "RoomList":
+                            UpdateRoomList(json);
                             break;
                     }
                 }
@@ -135,7 +143,7 @@ namespace Project_11.ViewModel
 
                 var loginData = new Data
                 {
-                    Type = "UserInfo",
+                    Type = "InfoList",
                     ID = Game_Account.ID
                 };
                 
@@ -204,16 +212,17 @@ namespace Project_11.ViewModel
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                UserStatusModel.Clear();
-                UserStatusModel.Add(new Status
+                Status.Clear();
+                Status.Add(new Status
                 {
                     Name = data.Name,
                     TotalMatch = data.TotalMatch,
                     Win = data.Win,
                     Lose = data.Lose,
-                    Rate = data.TotalMatch > 0 ? data.TotalMatch / data.Win * 100 : 0,
-                    Rating = data.Rating,
+                    WinRate = data.TotalMatch > 0 ? (double)data.Win / data.TotalMatch * 100 : 0,
+                    Rating = data.Rating
                 });
+
 
                 OnlineUsers.Clear();
                 foreach (var user in data.Users)
@@ -238,6 +247,26 @@ namespace Project_11.ViewModel
                 }
             });
         }
+        public void UpdateRoomList(string json)
+        {
+            var data = JsonConvert.DeserializeObject<Data>(json);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RoomList.Clear();
+
+                foreach (var room in data.Rooms)
+                {
+                    RoomList.Add(new Data
+                    {
+                        Title = room.Title,
+                        RatingLimit = room.RatingLimit,
+                        Host = room.Host,
+                        CreatedTime = room.CreatedTime
+                    });
+                }
+            });
+        }
 
         // 중복 윈도우 방지용 필드
         private Window? _createRoomWindow;
@@ -247,14 +276,13 @@ namespace Project_11.ViewModel
         {
             if (_createRoomWindow == null || !_createRoomWindow.IsVisible)
             {
-                _createRoomWindow = new CreateRoom();
+                _createRoomWindow = new CreateRoom(this);
                 _createRoomWindow.Show();
             }
             else
             {
                 _createRoomWindow.Activate(); // 이미 열려 있는 창을 앞으로
             }
-            
         }
 
         private void EnterGame()
@@ -298,17 +326,17 @@ namespace Project_11.ViewModel
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                var gameRoom = new GameRoom(this);
+                gameRoom.Show();
+
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window is CreateRoom || window is Game)
                     {
-                        window.Close();
+                        if (window != gameRoom)
+                            window.Close();
                     }
                 }
-
-                var gameRoom = new GameRoom();
-                gameRoom.DataContext = new ViewModel_Game(Game_Account);
-                gameRoom.Show();
             });
         }
 

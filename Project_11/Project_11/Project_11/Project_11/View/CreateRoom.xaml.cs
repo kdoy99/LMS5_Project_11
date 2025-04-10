@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Project_11.ViewModel;
 
 namespace Project_11.View
 {
@@ -19,9 +20,10 @@ namespace Project_11.View
     /// </summary>
     public partial class CreateRoom : Window
     {
-        public CreateRoom()
+        public CreateRoom(ViewModel_Game viewModel)
         {
             InitializeComponent();
+            this.DataContext = viewModel;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

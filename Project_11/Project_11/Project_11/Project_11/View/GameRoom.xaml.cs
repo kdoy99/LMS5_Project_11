@@ -21,9 +21,10 @@ namespace Project_11.View
     /// </summary>
     public partial class GameRoom : Window
     {
-        public GameRoom()
+        public GameRoom(ViewModel_Game viewmModel)
         {
             InitializeComponent();
+            this.DataContext = viewmModel;
         }
 
         private void ChatBox_Loaded(object sender, RoutedEventArgs e)
