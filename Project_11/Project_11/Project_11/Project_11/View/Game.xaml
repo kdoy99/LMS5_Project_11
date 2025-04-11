@@ -10,6 +10,21 @@
         Title="Game" Height="750" Width="1000">
     <Window.Resources>
         <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="2" BlurRadius="4" Color="Gray"/>
+        <Style x:Key="ListViewHeaderStyle" TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Foreground" Value="#ECF0F1"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#1A1A1A"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="2" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
 
@@ -151,31 +166,62 @@
                           Background="Transparent"
                           BorderThickness="0"
                           ItemsSource="{Binding RoomList}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Title}"
-                                           FontSize="14"
-                                           FontWeight="Bold"
-                                           Foreground="#333"
-                                           />
-                                <TextBlock Text="{Binding RatingLimit}"
-                                           FontSize="14"
-                                           FontWeight="Bold"
-                                           Foreground="#333"
-                                           />
-                                <TextBlock Text="{Binding Host}"
-                                           FontSize="14"
-                                           FontWeight="Bold"
-                                           Foreground="#333"
-                                           />
-                                <TextBlock Text="{Binding CreatedTime}"
-                                           FontSize="14"
-                                           Foreground="#888"
-                                           />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderStyle}">
+                            <GridViewColumn Header="방 제목" Width="350">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Left"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#333"
+                                                   />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="레이팅" Width="70">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding RatingLimit}" HorizontalAlignment="Center"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#333"
+                                                   TextAlignment="Center"
+                                                   />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="방장" Width="70">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Host}" HorizontalAlignment="Center"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="#333"
+                                                   TextAlignment="Center"
+                                                   />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+
+                            <GridViewColumn Header="생성된 시간" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding CreatedTime}" HorizontalAlignment="Center"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="14"
+                                                   Foreground="#888"
+                                                   TextAlignment="Center"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
                 </ListView>
             </Border>
         </Grid>

@@ -147,7 +147,7 @@ namespace Project_11_GameServer.Controller
                 case "Chat": // 채팅 전송
                     _server.Broadcast(json);
                     break;
-                case "Create_Room":
+                case "CreateRoom":
                     HandleCreateRoom(data);
                     break;
                 case "Game":
@@ -180,7 +180,7 @@ namespace Project_11_GameServer.Controller
             };
 
             string json = JsonConvert.SerializeObject(response);
-            Send(json);
+            _server.Broadcast(json);
         }
 
         private Status GetUserStatus(string id)
@@ -237,8 +237,14 @@ namespace Project_11_GameServer.Controller
 
             _server.AddRoom(roomData);
             log.DisplayLog($"게임방 생성 완료! {roomData}");
+
+            var fullRoomData = new Data
+            {
+                Type = "RoomList",
+                Rooms = _server.GetRoomList()
+            };
             
-            string broadcastJson = JsonConvert.SerializeObject(roomData);
+            string broadcastJson = JsonConvert.SerializeObject(fullRoomData);
             _server.Broadcast(broadcastJson);
         }
 
