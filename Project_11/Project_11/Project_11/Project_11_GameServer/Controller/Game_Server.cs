@@ -44,7 +44,6 @@ namespace Project_11_GameServer.Controller
         public void RemoveRoom(string roomID)
         {
             _rooms.RemoveAll(r => r.RoomID == roomID);
-            RoomMembers.Remove(roomID);
         }
 
         public List<Data> GetRoomList()
@@ -163,6 +162,9 @@ namespace Project_11_GameServer.Controller
                 case "Game":
 
                     break;
+                case "LeaveRoom":
+                    HandleLeaveRoom(data);
+                    break;
                 default:
                     
                     break;
@@ -269,10 +271,9 @@ namespace Project_11_GameServer.Controller
                 _server.RoomMembers[room.RoomID] = new List<ClientHandler>();
 
             _server.RoomMembers[room.RoomID].Add(this);
-            log.DisplayLog($"[{room.RoomID}] [{room.Title}]에 [{room.ID}] {room.Name}님 입장!");
+            log.DisplayLog($"[{room.RoomID}] [{room.Title}]에 [{data.ID}] {data.Name}님 입장!");
             
-            if (_server.RoomMembers[room.RoomID].Count >= 2 || 
-                _server.RoomMembers[room.RoomID].Count == 0)
+            if (_server.RoomMembers[room.RoomID].Count >= 2)
             {
                 _server.RemoveRoom(room.RoomID);
             }
@@ -280,6 +281,38 @@ namespace Project_11_GameServer.Controller
             string json = InfoList();
             _server.Broadcast(json);
 
+        }
+
+        private void HandleLeaveRoom(Data data)
+        {
+            if (!_server.RoomMembers.ContainsKey(data.RoomID))
+                return;
+
+            var members = _server.RoomMembers[data.RoomID];
+            int count = members.Count;
+
+            members.RemoveAll(m => m.Name == data.Name);
+
+            int afterCount = members.Count;
+            log.DisplayLog($"[LeaveRoom] Before: {count}, After: {afterCount}");
+
+            if (members.Count == 0)
+            {
+                _server.RoomMembers.Remove(data.RoomID);
+                _server.RemoveRoom(data.RoomID);
+                log.DisplayLog($"[{data.RoomID}] 방장의 이탈로 방 삭제됨!");
+            }
+
+            string json = InfoList();
+            _server.Broadcast(json);
+
+            var updatedRoomList = new Data
+            {
+                Type = "RoomList",
+                Rooms = _server.GetRoomList()
+            };
+            string roomListJson = JsonConvert.SerializeObject(updatedRoomList);
+            _server.Broadcast(roomListJson);
         }
         private string InfoList()
         {

@@ -27,6 +27,7 @@ namespace Project_11.ViewModel
         public ICommand CreateRoomCommand { get; } // 게임방 생성창 띄우는 커맨드
         public ICommand CreateGameRoomCommand { get; } // 게임방 생성, 창으로 이동하는 커맨드
         public ICommand LogOutCommand { get; } // 로그아웃
+        public ICommand QuitCommand { get; } // 게임방에서 나가기 버튼
 
         private Account _Game_Account;
         public Account Game_Account
@@ -79,6 +80,8 @@ namespace Project_11.ViewModel
             }
         }
 
+        public string CurrentRoomID { get; set; }
+
         public ViewModel_Game(Account account)
         {
             Game_Account = account;
@@ -86,6 +89,7 @@ namespace Project_11.ViewModel
             CreateRoomCommand = new RelayCommand(CreateRoom);
             CreateGameRoomCommand = new RelayCommand(EnterGame);
             LogOutCommand = new RelayCommand(LogOut);
+            QuitCommand = new RelayCommand(QuitGameRoom);
 
             MeStatusModel = new ObservableCollection<Status>();
         }
@@ -146,7 +150,7 @@ namespace Project_11.ViewModel
                     Type = "InfoList",
                     ID = Game_Account.ID
                 };
-                
+
                 string json = JsonConvert.SerializeObject(loginData);
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 await _stream.WriteAsync(data, 0, data.Length);
@@ -195,7 +199,7 @@ namespace Project_11.ViewModel
                 }
             }
         }
-        
+
         public void Chat(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
@@ -267,6 +271,8 @@ namespace Project_11.ViewModel
                     });
                 }
             });
+
+            CurrentRoomID = data.RoomID;
         }
 
         // 중복 윈도우 방지용 필드
@@ -361,11 +367,30 @@ namespace Project_11.ViewModel
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 _stream.Write(data, 0, data.Length);
 
+                CurrentRoomID = room.RoomID;
                 OpenGameRoom();
             }
             else
             {
                 ShowMessage("레이팅이 부족해서 입장할 수 없습니다!");
+            }
+        }
+
+        public void LeaveRoom()
+        {
+            if (!string.IsNullOrEmpty(CurrentRoomID))
+            {
+                var leaveData = new Data
+                {
+                    Type = "LeaveRoom",
+                    RoomID = CurrentRoomID,
+                    ID = Game_Account.ID,
+                    Name = Game_Account.Name
+                };
+
+                string json = JsonConvert.SerializeObject(leaveData);
+                byte[] buffer = Encoding.UTF8.GetBytes(json);
+                _stream.Write(buffer, 0, buffer.Length);
             }
         }
 
@@ -397,6 +422,38 @@ namespace Project_11.ViewModel
             {
                 ShowErrorMessage($"로그아웃 실패: {ex.Message}");
             }
+        }
+    
+        private void QuitGameRoom()
+        {
+            if (_client != null && _client.Connected)
+            {
+                var leaveData = new Data
+                {
+                    Type = "LeaveRoom",
+                    ID = Game_Account.ID,
+                    Name = Game_Account.Name
+                };
+
+                string json = JsonConvert.SerializeObject(leaveData);
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                _stream.Write(data, 0, data.Length);
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var GameLobby = new Game(this);
+                GameLobby.Show();
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is GameRoom)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
+            });
         }
     }
 }
