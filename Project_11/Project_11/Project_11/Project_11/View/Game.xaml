@@ -165,13 +165,13 @@
                 <ListView x:Name="GameRoomList"
                           Background="Transparent"
                           BorderThickness="0"
-                          ItemsSource="{Binding RoomList}">
+                          ItemsSource="{Binding RoomList}" MouseDoubleClick="GameRoomList_MouseDoubleClick">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderStyle}">
                             <GridViewColumn Header="방 제목" Width="350">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Left"
+                                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"
                                                    FontFamily="Segoe UI"
                                                    FontSize="14"
                                                    FontWeight="Bold"

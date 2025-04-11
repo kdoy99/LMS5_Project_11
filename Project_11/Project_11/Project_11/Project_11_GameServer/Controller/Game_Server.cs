@@ -34,7 +34,6 @@ namespace Project_11_GameServer.Controller
                     Rating = c.Rating
                 }).ToList();
         }
-
         // 현재 존재하는 게임방 리스트
         private List<Data> _rooms = new();
 
@@ -42,11 +41,19 @@ namespace Project_11_GameServer.Controller
         {
             _rooms.Add(roomData);
         }
+        public void RemoveRoom(string roomID)
+        {
+            _rooms.RemoveAll(r => r.RoomID == roomID);
+            RoomMembers.Remove(roomID);
+        }
 
         public List<Data> GetRoomList()
         {
             return _rooms;
         }
+
+        // 게임방 별 유저 추격용 딕셔너리
+        public Dictionary<string, List<ClientHandler>> RoomMembers = new();
 
         public async Task StartServer()
         {
@@ -150,6 +157,9 @@ namespace Project_11_GameServer.Controller
                 case "CreateRoom":
                     HandleCreateRoom(data);
                     break;
+                case "JoinRoom":
+                    HandleJoinRoom(data);
+                    break;
                 case "Game":
 
                     break;
@@ -229,6 +239,7 @@ namespace Project_11_GameServer.Controller
             var roomData = new Data
             {
                 Type = "RoomList",
+                RoomID = Guid.NewGuid().ToString(), // Guid.NewGuid() => 고유 ID 생성 기능
                 Title = data.Title,
                 RatingLimit = data.RatingLimit,
                 Host = data.Host,
@@ -236,7 +247,7 @@ namespace Project_11_GameServer.Controller
             };
 
             _server.AddRoom(roomData);
-            log.DisplayLog($"게임방 생성 완료! {roomData}");
+            log.DisplayLog($"게임방 생성 완료! {roomData.RoomID}, {roomData.Title}");
 
             var fullRoomData = new Data
             {
@@ -248,6 +259,28 @@ namespace Project_11_GameServer.Controller
             _server.Broadcast(broadcastJson);
         }
 
+        private void HandleJoinRoom(Data data)
+        {
+            var room = _server.GetRoomList().FirstOrDefault(r => r.RoomID == data.RoomID);
+            if (room == null)
+                return;
+
+            if (!_server.RoomMembers.ContainsKey(room.RoomID))
+                _server.RoomMembers[room.RoomID] = new List<ClientHandler>();
+
+            _server.RoomMembers[room.RoomID].Add(this);
+            log.DisplayLog($"[{room.RoomID}] [{room.Title}]에 [{room.ID}] {room.Name}님 입장!");
+            
+            if (_server.RoomMembers[room.RoomID].Count >= 2 || 
+                _server.RoomMembers[room.RoomID].Count == 0)
+            {
+                _server.RemoveRoom(room.RoomID);
+            }
+
+            string json = InfoList();
+            _server.Broadcast(json);
+
+        }
         private string InfoList()
         {
             var users = _server.OnlineUsers();

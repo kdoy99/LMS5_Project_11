@@ -259,6 +259,7 @@ namespace Project_11.ViewModel
                 {
                     RoomList.Add(new Data
                     {
+                        RoomID = room.RoomID,
                         Title = room.Title,
                         RatingLimit = room.RatingLimit,
                         Host = room.Host,
@@ -338,6 +339,34 @@ namespace Project_11.ViewModel
                     }
                 }
             });
+        }
+
+        public void JoinRoom(Data room)
+        {
+            if (room == null)
+                return;
+
+            if (!int.TryParse(room.RatingLimit, out int limit) || room.Rating >= limit)
+            {
+                var joinData = new Data
+                {
+                    Type = "JoinRoom",
+                    RoomID = room.RoomID,
+                    Title = room.Title,
+                    ID = Game_Account.ID,
+                    Name = Game_Account.Name
+                };
+
+                string json = JsonConvert.SerializeObject(joinData);
+                byte[] data = Encoding.UTF8.GetBytes(json);
+                _stream.Write(data, 0, data.Length);
+
+                OpenGameRoom();
+            }
+            else
+            {
+                ShowMessage("레이팅이 부족해서 입장할 수 없습니다!");
+            }
         }
 
         // 로그아웃

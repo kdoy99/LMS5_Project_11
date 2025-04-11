@@ -69,5 +69,14 @@ namespace Project_11.View
                 };
             }
         }
+
+        private void GameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = DataContext as ViewModel_Game;
+            if (viewModel != null && GameRoomList.SelectedItem is Data selectedRoom)
+            {
+                viewModel.JoinRoom(selectedRoom);
+            }
+        }
     }
 }

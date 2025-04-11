@@ -18,6 +18,7 @@ namespace Project_11_GameServer.Model
         public int Lose { get; set; } // 패배 횟수
         public int Rating { get; set; } // 점수
 
+        public string RoomID { get; set; } // 고유 방 ID
         public string Title { get; set; } // 생성된 방 제목
         public string Host { get; set; } // 방장 닉네임
         public string RatingLimit { get; set; } // 레이팅 제한
