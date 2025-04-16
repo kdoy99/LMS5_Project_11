@@ -28,10 +28,11 @@ namespace Project_11_GameServer.Controller
         {
             return _clients
                 .Where(c => !string.IsNullOrEmpty(c.Name))
+                .GroupBy(c => c.Name)
                 .Select(c => new OnlineUser
                 {
-                    Name = c.Name,
-                    Rating = c.Rating
+                    Name = c.First().Name,
+                    Rating = c.First().Rating
                 }).ToList();
         }
         // 현재 존재하는 게임방 리스트
@@ -98,6 +99,7 @@ namespace Project_11_GameServer.Controller
         private byte[] _buffer = new byte[2048];
 
         private Log log = new Log();
+        private Status status = new Status();
 
         public string ID { get; set; } // 유저 아이디
         public string Name { get; set; } // 유저 닉네임
@@ -152,6 +154,11 @@ namespace Project_11_GameServer.Controller
 
             switch(data.Type)
             {
+                case "Login":
+                    status = GetUserStatus(data.ID);
+                    ResetUserStatus(status);
+                    SendInfoList(data.ID);
+                    break;
                 case "InfoList": // 유저별 전적, 유저 리스트, 게임방 리스트 전송
                     SendInfoList(data.ID);
                     break;
@@ -174,31 +181,6 @@ namespace Project_11_GameServer.Controller
                     
                     break;
             }
-        }
-
-        private void SendInfoList(string id)
-        {
-            var status = GetUserStatus(id);
-            var users = _server.OnlineUsers();
-            var rooms = _server.GetRoomList();
-
-
-            var response = new Data
-            {
-                Type = "InfoList",
-                ID = status.ID,
-                Name = status.Name,
-                TotalMatch = status.TotalMatch,
-                Win = status.Win,
-                Lose = status.Lose,
-                Rating = status.Rating,
-                Users = users,
-                Rooms = rooms
-            };
-
-            string json = JsonConvert.SerializeObject(response);
-            _server.Broadcast(json);
-            log.DisplayLog($"송신 : {json}");
         }
 
         private Status GetUserStatus(string id)
@@ -233,16 +215,42 @@ namespace Project_11_GameServer.Controller
                     }
                 }
             }
-
-            // 안정적으로 필드에 저장
-            ID = userStatus.ID;
-            Name = userStatus.Name;
-            Rating = userStatus.Rating;
-            TotalMatch = userStatus.TotalMatch;
-            Win = userStatus.Win;
-            Lose = userStatus.Lose;
-
             return userStatus;
+        }
+
+        private void ResetUserStatus(Status _status)
+        {
+            // 안정적으로 필드에 저장
+            ID = _status.ID;
+            Name = _status.Name;
+            Rating = _status.Rating;
+            TotalMatch = _status.TotalMatch;
+            Win = _status.Win;
+            Lose = _status.Lose;
+        }
+
+        private void SendInfoList(string id)
+        {
+            var users = _server.OnlineUsers();
+            var rooms = _server.GetRoomList();
+
+
+            var response = new Data
+            {
+                Type = "InfoList",
+                ID = status.ID,
+                Name = status.Name,
+                TotalMatch = status.TotalMatch,
+                Win = status.Win,
+                Lose = status.Lose,
+                Rating = status.Rating,
+                Users = users,
+                Rooms = rooms
+            };
+
+            string json = JsonConvert.SerializeObject(response);
+            _server.Broadcast(json);
+            log.DisplayLog($"송신 : {json}");
         }
 
         private void HandleCreateRoom(Data data)
@@ -310,13 +318,8 @@ namespace Project_11_GameServer.Controller
                 log.DisplayLog($"[{data.RoomID}] 방장의 이탈로 방 삭제됨!");
             }
 
-            var updatedRoomList = new Data
-            {
-                Type = "RoomList",
-                Rooms = _server.GetRoomList()
-            };
-            string roomListJson = JsonConvert.SerializeObject(updatedRoomList);
-            _server.Broadcast(roomListJson);
+            string json = InfoList();
+            _server.Broadcast(json);
         }
         private string InfoList()
         {

@@ -147,7 +147,7 @@ namespace Project_11.ViewModel
 
                 var loginData = new Data
                 {
-                    Type = "InfoList",
+                    Type = "Login",
                     ID = Game_Account.ID
                 };
 
