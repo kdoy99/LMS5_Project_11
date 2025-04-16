@@ -43,7 +43,7 @@ namespace Project_11.ViewModel
         public ObservableCollection<string> ChatMessages { get; set; } = new();
         public ObservableCollection<Status> Status { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
-        public ObservableCollection<Data> RoomList { get; set; } = new();
+        public ObservableCollection<RoomInfo> RoomList { get; set; } = new();
         public ObservableCollection<Status> MeStatusModel { get; set; }
         public ObservableCollection<Status> OpponentStatusModel { get; set; }
 
@@ -111,13 +111,13 @@ namespace Project_11.ViewModel
 
                     switch (data.Type)
                     {
-                        case "Chat":
+                        case "Chat": // 로비 채팅
                             Chat(json);
                             break;
-                        case "InfoList":
+                        case "InfoList": // 유저 로그인, 로비 도달할 때
                             HandleInfoList(json);
                             break;
-                        case "RoomList":
+                        case "RoomList": // 새로운 방이 만들어질 때
                             UpdateRoomList(json);
                             break;
                     }
@@ -154,7 +154,7 @@ namespace Project_11.ViewModel
                 string json = JsonConvert.SerializeObject(loginData);
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 await _stream.WriteAsync(data, 0, data.Length);
-
+                
                 // 서버 응답 기다리는 부분
                 await Task.Run(ListenAsync);
             }
@@ -241,7 +241,7 @@ namespace Project_11.ViewModel
                 RoomList.Clear();
                 foreach (var room in data.Rooms)
                 {
-                    RoomList.Add(new Data
+                    RoomList.Add(new RoomInfo
                     {
                         Title = room.Title,
                         RatingLimit = room.RatingLimit,
@@ -255,15 +255,19 @@ namespace Project_11.ViewModel
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
 
+            if (data.Host == Game_Account.Name)
+            {
+                CurrentRoomID = data.RoomID;
+            }
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 RoomList.Clear();
 
                 foreach (var room in data.Rooms)
                 {
-                    RoomList.Add(new Data
+                    RoomList.Add(new RoomInfo
                     {
-                        RoomID = room.RoomID,
                         Title = room.Title,
                         RatingLimit = room.RatingLimit,
                         Host = room.Host,
@@ -271,8 +275,6 @@ namespace Project_11.ViewModel
                     });
                 }
             });
-
-            CurrentRoomID = data.RoomID;
         }
 
         // 중복 윈도우 방지용 필드
@@ -376,54 +378,6 @@ namespace Project_11.ViewModel
             }
         }
 
-        public void LeaveRoom()
-        {
-            if (!string.IsNullOrEmpty(CurrentRoomID))
-            {
-                var leaveData = new Data
-                {
-                    Type = "LeaveRoom",
-                    RoomID = CurrentRoomID,
-                    ID = Game_Account.ID,
-                    Name = Game_Account.Name
-                };
-
-                string json = JsonConvert.SerializeObject(leaveData);
-                byte[] buffer = Encoding.UTF8.GetBytes(json);
-                _stream.Write(buffer, 0, buffer.Length);
-            }
-        }
-
-        // 로그아웃
-        private void LogOut()
-        {
-            try
-            {
-                _stream?.Close();
-                _client?.Close();
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is Game)
-                        {
-                            ShowMessage($"안녕히 가십시오 {Game_Account.Name} 님!");
-                            window.Close();
-                            break;
-                        }
-                    }
-
-                    var loginWindow = new Login();
-                    loginWindow.Show();
-                });
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage($"로그아웃 실패: {ex.Message}");
-            }
-        }
-    
         private void QuitGameRoom()
         {
             if (_client != null && _client.Connected)
@@ -431,6 +385,7 @@ namespace Project_11.ViewModel
                 var leaveData = new Data
                 {
                     Type = "LeaveRoom",
+                    RoomID = CurrentRoomID,
                     ID = Game_Account.ID,
                     Name = Game_Account.Name
                 };
@@ -454,6 +409,35 @@ namespace Project_11.ViewModel
                     }
                 }
             });
+        }
+
+        // 로그아웃
+        private void LogOut()
+        {
+            try
+            {
+                _stream?.Close();
+                _client?.Close();
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ShowMessage($"안녕히 가십시오 {Game_Account.Name} 님!");
+                    var loginWindow = new Login();
+                    loginWindow.Show();
+
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is Game)
+                        {
+                            window.Close();
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"로그아웃 실패: {ex.Message}");
+            }
         }
     }
 }

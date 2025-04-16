@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_11.View"
         mc:Ignorable="d"
-        Title="GameRoom" Height="720" Width="1000" Closing="Window_Closing">
+        Title="GameRoom" Height="720" Width="1000">
 
     <Window.Resources>
         <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="2" BlurRadius="4" Color="Gray"/>

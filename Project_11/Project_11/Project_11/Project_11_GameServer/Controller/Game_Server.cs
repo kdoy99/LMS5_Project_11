@@ -35,9 +35,9 @@ namespace Project_11_GameServer.Controller
                 }).ToList();
         }
         // 현재 존재하는 게임방 리스트
-        private List<Data> _rooms = new();
+        private List<RoomInfo> _rooms = new();
 
-        public void AddRoom(Data roomData)
+        public void AddRoom(RoomInfo roomData)
         {
             _rooms.Add(roomData);
         }
@@ -46,7 +46,7 @@ namespace Project_11_GameServer.Controller
             _rooms.RemoveAll(r => r.RoomID == roomID);
         }
 
-        public List<Data> GetRoomList()
+        public List<RoomInfo> GetRoomList()
         {
             return _rooms;
         }
@@ -75,6 +75,7 @@ namespace Project_11_GameServer.Controller
             {
                 client.Send(json);
             }
+            log.DisplayLog($"송신 : {json}");
         }
 
         public void RemoveClient(ClientHandler client)
@@ -98,8 +99,12 @@ namespace Project_11_GameServer.Controller
 
         private Log log = new Log();
 
-        public string Name { get; set; } // 유저 리스트 용, 닉네임
-        public int Rating { get; set; } // 유저 리스트 용, 점수
+        public string ID { get; set; } // 유저 아이디
+        public string Name { get; set; } // 유저 닉네임
+        public int Rating { get; set; } // 유저 점수
+        public int TotalMatch { get; set; } // 총 판수
+        public int Win { get; set; } // 총 승리
+        public int Lose { get; set; } // 총 패배
 
         public ClientHandler(TcpClient client, Game_Server server)
         {
@@ -121,7 +126,7 @@ namespace Project_11_GameServer.Controller
                     }
 
                     string json = Encoding.UTF8.GetString(_buffer, 0, bytesRead);
-                    log.DisplayLog(json);
+                    log.DisplayLog($"수신 : {json}");
 
                     await HandleMessage(json);
                 }
@@ -193,6 +198,7 @@ namespace Project_11_GameServer.Controller
 
             string json = JsonConvert.SerializeObject(response);
             _server.Broadcast(json);
+            log.DisplayLog($"송신 : {json}");
         }
 
         private Status GetUserStatus(string id)
@@ -228,37 +234,41 @@ namespace Project_11_GameServer.Controller
                 }
             }
 
+            // 안정적으로 필드에 저장
+            ID = userStatus.ID;
             Name = userStatus.Name;
             Rating = userStatus.Rating;
+            TotalMatch = userStatus.TotalMatch;
+            Win = userStatus.Win;
+            Lose = userStatus.Lose;
 
             return userStatus;
         }
 
         private void HandleCreateRoom(Data data)
         {
-            string title = data.Title;
-
-            var roomData = new Data
+            var roomData = new RoomInfo
             {
-                Type = "RoomList",
                 RoomID = Guid.NewGuid().ToString(), // Guid.NewGuid() => 고유 ID 생성 기능
                 Title = data.Title,
                 RatingLimit = data.RatingLimit,
                 Host = data.Host,
-                CreatedTime = DateTime.Now.ToString("tt hh:mm")
+                CreatedTime = DateTime.Now
             };
 
             _server.AddRoom(roomData);
-            log.DisplayLog($"게임방 생성 완료! {roomData.RoomID}, {roomData.Title}");
-
-            var fullRoomData = new Data
+            _server.RoomMembers[roomData.RoomID] = new List<ClientHandler> { this };
+            var Data = new Data
             {
+                RoomID = roomData.RoomID,
                 Type = "RoomList",
+                Host = data.Host,
                 Rooms = _server.GetRoomList()
             };
-            
-            string broadcastJson = JsonConvert.SerializeObject(fullRoomData);
+
+            string broadcastJson = JsonConvert.SerializeObject(Data);
             _server.Broadcast(broadcastJson);
+            log.DisplayLog($"게임방 생성 완료! {roomData.RoomID}, {roomData.Title}");
         }
 
         private void HandleJoinRoom(Data data)
@@ -276,18 +286,15 @@ namespace Project_11_GameServer.Controller
             if (_server.RoomMembers[room.RoomID].Count >= 2)
             {
                 _server.RemoveRoom(room.RoomID);
+                log.DisplayLog($"[{room.RoomID}] [{room.Title}] 방 제거");
             }
 
             string json = InfoList();
             _server.Broadcast(json);
-
         }
 
         private void HandleLeaveRoom(Data data)
         {
-            if (!_server.RoomMembers.ContainsKey(data.RoomID))
-                return;
-
             var members = _server.RoomMembers[data.RoomID];
             int count = members.Count;
 
@@ -302,9 +309,6 @@ namespace Project_11_GameServer.Controller
                 _server.RemoveRoom(data.RoomID);
                 log.DisplayLog($"[{data.RoomID}] 방장의 이탈로 방 삭제됨!");
             }
-
-            string json = InfoList();
-            _server.Broadcast(json);
 
             var updatedRoomList = new Data
             {

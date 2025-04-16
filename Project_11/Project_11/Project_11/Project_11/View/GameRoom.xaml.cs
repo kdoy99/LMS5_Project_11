@@ -25,14 +25,6 @@ namespace Project_11.View
         {
             InitializeComponent();
             this.DataContext = viewmModel;
-            Closing += Window_Closing;
-        }
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (DataContext is ViewModel_Game viewmModel)
-            {
-                viewmModel.LeaveRoom();
-            }
         }
 
         private void ChatBox_Loaded(object sender, RoutedEventArgs e)

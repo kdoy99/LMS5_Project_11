@@ -26,7 +26,7 @@ namespace Project_11.Model
         public string CreatedTime { get; set; } // 방 생성 시간
 
         public List<OnlineUser>? Users { get; set; } // 접속 중인 유저 리스트
-        public List<Data> Rooms { get; set; } // 현재 존재하는 게임방 리스트
+        public List<RoomInfo> Rooms { get; set; } // 현재 존재하는 게임방 리스트
 
     }
 }
