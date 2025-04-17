@@ -159,7 +159,7 @@
             Effect="{StaticResource DropShadowEffect}"
             >
                 <ListBox x:Name="OpponentStatus"
-                 ItemsSource="{Binding OpponentStatusModel}" BorderThickness="0"
+                 ItemsSource="{Binding OpponentStatus}" BorderThickness="0"
                  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
                  Background="Transparent">

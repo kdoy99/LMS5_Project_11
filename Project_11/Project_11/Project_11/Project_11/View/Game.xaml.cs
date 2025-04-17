@@ -72,10 +72,18 @@ namespace Project_11.View
 
         private void GameRoomList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var viewModel = DataContext as ViewModel_Game;
-            if (viewModel != null && GameRoomList.SelectedItem is Data selectedRoom)
+            if (DataContext is ViewModel_Game viewModel && viewModel.SelectedRoom != null)
             {
-                viewModel.JoinRoom(selectedRoom);
+                var room = viewModel.SelectedRoom;
+                var data = new Data
+                {
+                    RoomID = room.RoomID,
+                    Title = room.Title,
+                    RatingLimit = room.RatingLimit,
+                    Rating = room.RatingLimit != null ? int.Parse(room.RatingLimit) : 0
+                };
+
+                viewModel.JoinRoom(data);
             }
         }
     }

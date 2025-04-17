@@ -45,8 +45,7 @@ namespace Project_11.ViewModel
         public ObservableCollection<Status> Status { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
         public ObservableCollection<RoomInfo> RoomList { get; set; } = new();
-        public ObservableCollection<Status> MeStatusModel { get; set; }
-        public ObservableCollection<Status> OpponentStatusModel { get; set; }
+        public ObservableCollection<Status> OpponentStatus { get; set; } = new();
         public List<Status> Players { get; set; } = new();
 
         private string _roomTitle;
@@ -82,6 +81,17 @@ namespace Project_11.ViewModel
             }
         }
 
+        private RoomInfo _selectedRoom;
+        public RoomInfo SelectedRoom
+        {
+            get => _selectedRoom;
+            set
+            {
+                _selectedRoom = value;
+                OnPropertyChanged(nameof(SelectedRoom));
+            }
+        }
+
         public string CurrentRoomID { get; set; }
         public int Rating { get; set; } // 방장 레이팅
 
@@ -93,9 +103,6 @@ namespace Project_11.ViewModel
             CreateGameRoomCommand = new RelayCommand(EnterGame);
             LogOutCommand = new RelayCommand(LogOut);
             QuitCommand = new RelayCommand(QuitGameRoom);
-
-            MeStatusModel = new ObservableCollection<Status>();
-            OpponentStatusModel = new ObservableCollection<Status>();
         }
 
         private async Task ListenAsync()
@@ -271,11 +278,33 @@ namespace Project_11.ViewModel
         public void HandleGame(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
+            Status opponent;
+
+            // 상대방 구별
+            if (Game_Account.Name == data.Players[0].Name)
+            {
+                opponent = data.Players[1];
+            }
+            else
+            {
+                opponent = data.Players[0];
+            }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
                 GameChat.Add($"게임이 시작되었습니다!!");
                 GameChat.Add($"[{data.Players[0].Name} ({data.Players[0].Rating})] VS [{data.Players[1].Name} ({data.Players[1].Rating})]");
+
+                OpponentStatus.Clear();
+                OpponentStatus.Add(new Status
+                {
+                    Name = opponent.Name,
+                    TotalMatch = opponent.TotalMatch,
+                    Win = opponent.Win,
+                    Lose = opponent.Lose,
+                    WinRate = opponent.TotalMatch > 0 ? (double)opponent.Win / opponent.TotalMatch * 100 : 0,
+                    Rating = opponent.Rating
+                });
             });
         }
         public void UpdateRoomList(string json)

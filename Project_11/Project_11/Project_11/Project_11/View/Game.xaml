@@ -165,7 +165,9 @@
                 <ListView x:Name="GameRoomList"
                           Background="Transparent"
                           BorderThickness="0"
-                          ItemsSource="{Binding RoomList}" MouseDoubleClick="GameRoomList_MouseDoubleClick">
+                          ItemsSource="{Binding RoomList}"
+                          SelectedItem="{Binding SelectedRoom, Mode=TwoWay}"
+                          MouseDoubleClick="GameRoomList_MouseDoubleClick">
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHeaderStyle}">
                             <GridViewColumn Header="방 제목" Width="350">
