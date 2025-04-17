@@ -190,7 +190,7 @@
             Margin="10,10,10,0"
             Padding="10">
                 <ListBox Name="ChatBox" 
-                 ItemsSource="{Binding GameChatListCommand}" 
+                 ItemsSource="{Binding GameChat}" 
                  Background="Transparent"
                  BorderBrush="#DDD"
                  BorderThickness="0"

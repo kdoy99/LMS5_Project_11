@@ -24,6 +24,9 @@ namespace Project_11_GameServer.Model
         public string RatingLimit { get; set; } // 레이팅 제한
         public string CreatedTime { get; set; } // 방 생성 시간
 
+        public string Color { get; set; } // 돌 색깔
+        public List<Status> Players { get; set; } // 게임 참여 유저
+
         public List<OnlineUser>? Users { get; set; } // 접속 중인 유저 리스트
         public List<RoomInfo> Rooms { get; set; } // 현재 존재하는 게임방 리스트
 

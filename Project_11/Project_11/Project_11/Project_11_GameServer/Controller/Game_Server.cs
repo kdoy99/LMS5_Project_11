@@ -89,6 +89,7 @@ namespace Project_11_GameServer.Controller
     public interface INetwork
     {
         void Send(string json);
+        void SendToClient(ClientHandler client, Data data);
     }
 
     public class ClientHandler : INetwork
@@ -157,6 +158,7 @@ namespace Project_11_GameServer.Controller
                 case "Login":
                     status = GetUserStatus(data.ID);
                     ResetUserStatus(status);
+                    SendStatus(data.ID);
                     SendInfoList(data.ID);
                     break;
                 case "InfoList": // 유저별 전적, 유저 리스트, 게임방 리스트 전송
@@ -229,6 +231,24 @@ namespace Project_11_GameServer.Controller
             Lose = _status.Lose;
         }
 
+        private void SendStatus(string id)
+        {
+            var response = new Data
+            {
+                Type = "Status",
+                ID = ID,
+                Name = Name,
+                Rating = Rating,
+                TotalMatch = TotalMatch,
+                Win = Win,
+                Lose = Lose
+            };
+
+            string json = JsonConvert.SerializeObject(response);
+            Send(json);
+            log.DisplayLog($"송신 : {json}");
+        }
+
         private void SendInfoList(string id)
         {
             var users = _server.OnlineUsers();
@@ -238,12 +258,6 @@ namespace Project_11_GameServer.Controller
             var response = new Data
             {
                 Type = "InfoList",
-                ID = status.ID,
-                Name = status.Name,
-                TotalMatch = status.TotalMatch,
-                Win = status.Win,
-                Lose = status.Lose,
-                Rating = status.Rating,
                 Users = users,
                 Rooms = rooms
             };
@@ -268,8 +282,8 @@ namespace Project_11_GameServer.Controller
             _server.RoomMembers[roomData.RoomID] = new List<ClientHandler> { this };
             var Data = new Data
             {
-                RoomID = roomData.RoomID,
                 Type = "RoomList",
+                RoomID = roomData.RoomID,
                 Host = data.Host,
                 Rooms = _server.GetRoomList()
             };
@@ -281,24 +295,78 @@ namespace Project_11_GameServer.Controller
 
         private void HandleJoinRoom(Data data)
         {
-            var room = _server.GetRoomList().FirstOrDefault(r => r.RoomID == data.RoomID);
-            if (room == null)
-                return;
+            var room = _server.GetRoomList().FirstOrDefault(r => r.RoomID == data.RoomID); // 존재하는 방인지 검사
+            if (room == null) // 방이 없으면
+                return; // 돌아가기
 
-            if (!_server.RoomMembers.ContainsKey(room.RoomID))
-                _server.RoomMembers[room.RoomID] = new List<ClientHandler>();
-
-            _server.RoomMembers[room.RoomID].Add(this);
+            _server.RoomMembers[room.RoomID].Add(this); // 방에 유저 추가
             log.DisplayLog($"[{room.RoomID}] [{room.Title}]에 [{data.ID}] {data.Name}님 입장!");
             
-            if (_server.RoomMembers[room.RoomID].Count >= 2)
+            if (_server.RoomMembers[room.RoomID].Count >= 2) // 방이 가득차면
             {
                 _server.RemoveRoom(room.RoomID);
-                log.DisplayLog($"[{room.RoomID}] [{room.Title}] 방 제거");
+                log.DisplayLog($"[{room.RoomID}] [{room.Title}] 방 목록에서 제거");
             }
 
             string json = InfoList();
             _server.Broadcast(json);
+
+            _server.RoomMembers.TryGetValue(room.RoomID, out var members);
+
+            var player1Data = new Status
+            {
+                ID = members[0].ID,
+                Name = members[0].Name,
+                TotalMatch = members[0].TotalMatch,
+                Win = members[0].Win,
+                Lose = members[0].Lose,
+                Rating = members[0].Rating
+            };
+
+            var player2Data = new Status
+            {
+                ID = members[1].ID,
+                Name = members[1].Name,
+                TotalMatch = members[1].TotalMatch,
+                Win = members[1].Win,
+                Lose = members[1].Lose,
+                Rating = members[1].Rating
+            };
+            
+            // 랜덤 순서
+            Random rand = new Random();
+            int randomColor = rand.Next(2);
+            string color1;
+            string color2;
+            if (randomColor == 0)
+            {
+                color1 = "Black";
+                color2 = "White";
+            }
+            else
+            {
+                color1 = "White";
+                color2 = "Black";
+            }
+
+            var Data1 = new Data
+            {
+                Type = "GameStart",
+                RoomID = room.RoomID,
+                Color = color1,
+                Players = new List<Status> { player1Data, player2Data }
+            };
+
+            var Data2 = new Data
+            {
+                Type = "GameStart",
+                RoomID = room.RoomID,
+                Color = color2,
+                Players = new List<Status> { player2Data, player1Data }
+            };
+
+            SendToClient(members[0], Data1);
+            SendToClient(members[1], Data2);
         }
 
         private void HandleLeaveRoom(Data data)
@@ -346,6 +414,19 @@ namespace Project_11_GameServer.Controller
             catch (Exception ex)
             {
                 log.DisplayLog($"메시지 전송 실패: {ex.Message}");
+            }
+        }
+
+        public void SendToClient(ClientHandler client, Data data)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(data);
+                client.Send(json);
+            }
+            catch (Exception ex)
+            {
+                log.DisplayLog($"게임 시작을 위한 데이터 전송 실패 : {ex.Message}");
             }
         }
     }

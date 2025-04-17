@@ -16,6 +16,7 @@ namespace Project_11.Model
         public int Lose { get; set; }
         public double WinRate { get; set; }
         public int Rating { get; set; }
+        public string Color { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)

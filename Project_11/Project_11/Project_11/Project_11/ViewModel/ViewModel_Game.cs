@@ -41,11 +41,13 @@ namespace Project_11.ViewModel
         }
 
         public ObservableCollection<string> ChatMessages { get; set; } = new();
+        public ObservableCollection<string> GameChat { get; set; } = new();
         public ObservableCollection<Status> Status { get; set; } = new();
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
         public ObservableCollection<RoomInfo> RoomList { get; set; } = new();
         public ObservableCollection<Status> MeStatusModel { get; set; }
         public ObservableCollection<Status> OpponentStatusModel { get; set; }
+        public List<Status> Players { get; set; } = new();
 
         private string _roomTitle;
         public string RoomTitle
@@ -81,6 +83,7 @@ namespace Project_11.ViewModel
         }
 
         public string CurrentRoomID { get; set; }
+        public int Rating { get; set; } // 방장 레이팅
 
         public ViewModel_Game(Account account)
         {
@@ -92,6 +95,7 @@ namespace Project_11.ViewModel
             QuitCommand = new RelayCommand(QuitGameRoom);
 
             MeStatusModel = new ObservableCollection<Status>();
+            OpponentStatusModel = new ObservableCollection<Status>();
         }
 
         private async Task ListenAsync()
@@ -114,11 +118,17 @@ namespace Project_11.ViewModel
                         case "Chat": // 로비 채팅
                             Chat(json);
                             break;
+                        case "Status":
+                            HandleStatus(json);
+                            break;
                         case "InfoList": // 유저 로그인, 로비 도달할 때
                             HandleInfoList(json);
                             break;
                         case "RoomList": // 새로운 방이 만들어질 때
                             UpdateRoomList(json);
+                            break;
+                        case "GameStart":
+                            HandleGame(json);
                             break;
                     }
                 }
@@ -209,10 +219,10 @@ namespace Project_11.ViewModel
                 ChatMessages.Add($"[{data.Name}] {data.Content}");
             });
         }
-        // 유저 전적 정보
-        public void HandleInfoList(string json)
+        public void HandleStatus(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
+            Rating = data.Rating;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -226,8 +236,15 @@ namespace Project_11.ViewModel
                     WinRate = data.TotalMatch > 0 ? (double)data.Win / data.TotalMatch * 100 : 0,
                     Rating = data.Rating
                 });
+            });
+        }
+        // 유저 전적 정보
+        public void HandleInfoList(string json)
+        {
+            var data = JsonConvert.DeserializeObject<Data>(json);
 
-
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 OnlineUsers.Clear();
                 foreach (var user in data.Users)
                 {
@@ -251,11 +268,21 @@ namespace Project_11.ViewModel
                 }
             });
         }
+        public void HandleGame(string json)
+        {
+            var data = JsonConvert.DeserializeObject<Data>(json);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                GameChat.Add($"게임이 시작되었습니다!!");
+                GameChat.Add($"[{data.Players[0].Name} ({data.Players[0].Rating})] VS [{data.Players[1].Name} ({data.Players[1].Rating})]");
+            });
+        }
         public void UpdateRoomList(string json)
         {
             var data = JsonConvert.DeserializeObject<Data>(json);
 
-            if (data.Host == Game_Account.Name)
+            if (data.Host == Game_Account.Name) // 여기가 방장이면
             {
                 CurrentRoomID = data.RoomID;
             }
@@ -268,6 +295,7 @@ namespace Project_11.ViewModel
                 {
                     RoomList.Add(new RoomInfo
                     {
+                        RoomID = room.RoomID,
                         Title = room.Title,
                         RatingLimit = room.RatingLimit,
                         Host = room.Host,
@@ -308,6 +336,12 @@ namespace Project_11.ViewModel
                 if (!int.TryParse(RatingLimit, out rating))
                 {
                     ShowMessage("레이팅 제한은 숫자로 입력해주세요.");
+                    return;
+                }
+
+                if (rating > Rating)
+                {
+                    ShowMessage($"입력한 레이팅 제한이 본인의 레이팅보다 높습니다. (내 레이팅: {Rating})");
                     return;
                 }
             }
@@ -394,6 +428,8 @@ namespace Project_11.ViewModel
                 byte[] data = Encoding.UTF8.GetBytes(json);
                 _stream.Write(data, 0, data.Length);
             }
+
+            CurrentRoomID = null;
 
             Application.Current.Dispatcher.Invoke(() =>
             {
