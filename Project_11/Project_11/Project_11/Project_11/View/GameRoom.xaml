@@ -29,72 +29,81 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="5" Margin="10">
             <Viewbox Stretch="Uniform">
-                <UniformGrid Rows="8" Columns="8">
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                    <Button/>
-                </UniformGrid>
+                <Grid Width="500" Height="500">
+                    <Image Source="/View/board.png"
+                           Stretch="Fill"
+                           Panel.ZIndex="0"/>
+                    
+                    <UniformGrid Rows="8" Columns="8"
+                                 Width="444" Height="444"
+                                 Background="Transparent"
+                                 Panel.ZIndex="1">
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                        <Button Background="Transparent"/>
+                    </UniformGrid>
+                </Grid>
             </Viewbox>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="3" Margin="10,10,10,10">
