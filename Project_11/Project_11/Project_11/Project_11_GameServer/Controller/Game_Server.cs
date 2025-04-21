@@ -367,6 +367,8 @@ namespace Project_11_GameServer.Controller
 
             SendToClient(members[0], Data1);
             SendToClient(members[1], Data2);
+
+            
         }
 
         private void HandleLeaveRoom(Data data)

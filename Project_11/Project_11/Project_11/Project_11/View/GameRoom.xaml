@@ -11,6 +11,12 @@
         <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="2" BlurRadius="4" Color="Gray"/>
     </Window.Resources>
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="1,1" EndPoint="0,0">
+                <GradientStop Color="#FFC2BFF2" Offset="1"/>
+                <GradientStop Color="#FF4A5D91" Offset="0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>
@@ -106,6 +112,7 @@
                 </Grid>
             </Viewbox>
         </Grid>
+
         <Grid Grid.Row="1" Grid.Column="3" Margin="10,10,10,10">
             <Border Background="#2C3E50"
                     BorderBrush="Black"
@@ -192,32 +199,32 @@
 
         <Grid Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2">
             <Border Background="#F3F3F3"
-            BorderBrush="#DDD"
-            BorderThickness="1"
-            CornerRadius="10"
-            Effect="{StaticResource DropShadowEffect}"
-            Margin="10,10,10,0"
-            Padding="10">
+                    BorderBrush="#DDD"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Effect="{StaticResource DropShadowEffect}"
+                    Margin="10,10,10,0"
+                    Padding="10">
                 <ListBox Name="ChatBox" 
-                 ItemsSource="{Binding GameChat}" 
-                 Background="Transparent"
-                 BorderBrush="#DDD"
-                 BorderThickness="0"
-                 Padding="10"
-                 FontFamily="Segoe UI"
-                 FontSize="12"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto" Loaded="ChatBox_Loaded">
+                         ItemsSource="{Binding GameChat}" 
+                         Background="Transparent"
+                         BorderBrush="#DDD"
+                         BorderThickness="0"
+                         Padding="10"
+                         FontFamily="Segoe UI"
+                         FontSize="12"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" Loaded="ChatBox_Loaded">
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#F9F9F9"
-                            Effect="{StaticResource DropShadowEffect}"
-                            CornerRadius="10"
-                            Padding="8"
-                            Margin="5"
-                            BorderBrush="#CCC"
-                            BorderThickness="0"
-                            >
+                                    Effect="{StaticResource DropShadowEffect}"
+                                    CornerRadius="10"
+                                    Padding="8"
+                                    Margin="5"
+                                    BorderBrush="#CCC"
+                                    BorderThickness="0"
+                                    >
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="#333"/>
                             </Border>
                         </DataTemplate>

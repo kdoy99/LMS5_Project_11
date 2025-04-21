@@ -10,8 +10,10 @@
 
   <ItemGroup>
     <None Remove="View\back.png" />
+    <None Remove="View\black.png" />
     <None Remove="View\board.png" />
     <None Remove="View\othello.jpg" />
+    <None Remove="View\white.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,10 +22,14 @@
 
   <ItemGroup>
     <Resource Include="View\back.png" />
+    <Resource Include="View\black.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="View\board.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="View\othello.jpg" />
+    <Resource Include="View\white.jpg" />
   </ItemGroup>
 
 </Project>
