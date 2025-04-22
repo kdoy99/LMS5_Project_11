@@ -23,6 +23,8 @@ namespace Project_11.ViewModel
         private TcpClient _client;
         private NetworkStream _stream;
 
+        public BoardViewModel GameBoard { get; set; } = new();
+
         public ICommand SendMessageCommand { get; set; } // 메시지 전송용 커맨드
         public ICommand CreateRoomCommand { get; } // 게임방 생성창 띄우는 커맨드
         public ICommand CreateGameRoomCommand { get; } // 게임방 생성, 창으로 이동하는 커맨드
@@ -46,7 +48,19 @@ namespace Project_11.ViewModel
         public ObservableCollection<OnlineUser> OnlineUsers { get; set; } = new();
         public ObservableCollection<RoomInfo> RoomList { get; set; } = new();
         public ObservableCollection<Status> OpponentStatus { get; set; } = new();
+        public ObservableCollection<CellViewModel> Board { get; set; }
+
         public List<Status> Players { get; set; } = new();
+        private bool _isPlaying;
+        public bool IsPlaying
+        {
+            get { return _isPlaying; }
+            set
+            {
+                _isPlaying = value;
+                OnPropertyChanged(nameof(IsPlaying));
+            }
+        }
 
         private string _roomTitle;
         public string RoomTitle
@@ -92,6 +106,11 @@ namespace Project_11.ViewModel
             }
         }
 
+        private void OnCellClicked(CellViewModel cell)
+        {
+            GameChat.Add($"[{cell.Row}, {cell.Column}] 셀이 클릭되었습니다.");
+        }
+
         public string CurrentRoomID { get; set; }
         public int Rating { get; set; } // 방장 레이팅
 
@@ -103,6 +122,15 @@ namespace Project_11.ViewModel
             CreateGameRoomCommand = new RelayCommand(EnterGame);
             LogOutCommand = new RelayCommand(LogOut);
             QuitCommand = new RelayCommand(QuitGameRoom);
+
+            Board = new ObservableCollection<CellViewModel>();
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    Board.Add(new CellViewModel(row, col, OnCellClicked));
+                }
+            }
         }
 
         private async Task ListenAsync()
@@ -258,7 +286,8 @@ namespace Project_11.ViewModel
                     OnlineUsers.Add(new OnlineUser
                     {
                         Name = user.Name,
-                        Rating = user.Rating
+                        Rating = user.Rating,
+                        IsPlaying = user.IsPlaying
                     });
                 }
 
@@ -305,6 +334,8 @@ namespace Project_11.ViewModel
                     WinRate = opponent.TotalMatch > 0 ? (double)opponent.Win / opponent.TotalMatch * 100 : 0,
                     Rating = opponent.Rating
                 });
+
+                IsPlaying = data.Players[0].IsPlaying;
             });
         }
         public void UpdateRoomList(string json)

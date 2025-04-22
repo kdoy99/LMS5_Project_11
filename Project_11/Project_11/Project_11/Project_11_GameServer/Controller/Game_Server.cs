@@ -32,15 +32,19 @@ namespace Project_11_GameServer.Controller
                 .Select(c => new OnlineUser
                 {
                     Name = c.First().Name,
-                    Rating = c.First().Rating
+                    Rating = c.First().Rating,
+                    IsPlaying = c.First().IsPlaying
                 }).ToList();
         }
         // 현재 존재하는 게임방 리스트
         private List<RoomInfo> _rooms = new();
+        // 해당하는 게임방이 플레이중인지 아닌지
+        public Dictionary<string, bool> RoomPlayingStatus = new();
 
         public void AddRoom(RoomInfo roomData)
         {
             _rooms.Add(roomData);
+            RoomPlayingStatus[roomData.RoomID] = false;
         }
         public void RemoveRoom(string roomID)
         {
@@ -108,6 +112,7 @@ namespace Project_11_GameServer.Controller
         public int TotalMatch { get; set; } // 총 판수
         public int Win { get; set; } // 총 승리
         public int Lose { get; set; } // 총 패배
+        public bool IsPlaying { get; set; } // 플레이 유무
 
         public ClientHandler(TcpClient client, Game_Server server)
         {
@@ -229,6 +234,7 @@ namespace Project_11_GameServer.Controller
             TotalMatch = _status.TotalMatch;
             Win = _status.Win;
             Lose = _status.Lose;
+            IsPlaying = _status.IsPlaying;
         }
 
         private void SendStatus(string id)
@@ -301,17 +307,21 @@ namespace Project_11_GameServer.Controller
 
             _server.RoomMembers[room.RoomID].Add(this); // 방에 유저 추가
             log.DisplayLog($"[{room.RoomID}] [{room.Title}]에 [{data.ID}] {data.Name}님 입장!");
-            
-            if (_server.RoomMembers[room.RoomID].Count >= 2) // 방이 가득차면
-            {
-                _server.RemoveRoom(room.RoomID);
-                log.DisplayLog($"[{room.RoomID}] [{room.Title}] 방 목록에서 제거");
-            }
 
+            var members = _server.RoomMembers[room.RoomID];
+            if (members.Count < 2) // 방이 가득차지 않았다면
+                return;
+
+            // 방에 2명이 다 들어온 뒤
+            _server.RemoveRoom(room.RoomID);
+            _server.RoomPlayingStatus[room.RoomID] = true;
+            log.DisplayLog($"[{room.RoomID}] [{room.Title}] 방 목록에서 제거");
+
+            members[0].IsPlaying = true;
+            members[1].IsPlaying = true;
+            
             string json = InfoList();
             _server.Broadcast(json);
-
-            _server.RoomMembers.TryGetValue(room.RoomID, out var members);
 
             var player1Data = new Status
             {
@@ -320,7 +330,8 @@ namespace Project_11_GameServer.Controller
                 TotalMatch = members[0].TotalMatch,
                 Win = members[0].Win,
                 Lose = members[0].Lose,
-                Rating = members[0].Rating
+                Rating = members[0].Rating,
+                IsPlaying = members[0].IsPlaying
             };
 
             var player2Data = new Status
@@ -330,8 +341,11 @@ namespace Project_11_GameServer.Controller
                 TotalMatch = members[1].TotalMatch,
                 Win = members[1].Win,
                 Lose = members[1].Lose,
-                Rating = members[1].Rating
+                Rating = members[1].Rating,
+                IsPlaying = members[1].IsPlaying
             };
+
+            
             
             // 랜덤 순서
             Random rand = new Random();
@@ -367,8 +381,6 @@ namespace Project_11_GameServer.Controller
 
             SendToClient(members[0], Data1);
             SendToClient(members[1], Data2);
-
-            
         }
 
         private void HandleLeaveRoom(Data data)

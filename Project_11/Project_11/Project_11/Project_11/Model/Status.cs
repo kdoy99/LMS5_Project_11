@@ -16,6 +16,7 @@ namespace Project_11.Model
         public int Lose { get; set; }
         public double WinRate { get; set; }
         public int Rating { get; set; }
+        public bool IsPlaying { get; set; } = false; // 게임 중인지 아닌지
         public string Color { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

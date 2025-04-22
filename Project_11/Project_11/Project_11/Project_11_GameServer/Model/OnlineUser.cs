@@ -10,5 +10,6 @@ namespace Project_11_GameServer.Model
     {
         public string Name { get; set; }
         public int Rating { get; set; }
+        public bool IsPlaying { get; set; }
     }
 }

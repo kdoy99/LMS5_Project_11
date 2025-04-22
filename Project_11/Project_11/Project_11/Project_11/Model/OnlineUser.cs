@@ -10,5 +10,7 @@ namespace Project_11.Model
     {
         public string Name { get; set; }
         public string Rating { get; set; }
+        public bool IsPlaying { get; set; }
+
     }
 }

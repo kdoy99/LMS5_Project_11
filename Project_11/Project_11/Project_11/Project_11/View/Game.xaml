@@ -289,6 +289,9 @@
                                         <TextBlock Text=" [" FontSize="14"/>
                                         <TextBlock Text="{Binding Rating}" FontSize="14"/>
                                         <TextBlock Text="]" FontSize="14"/>
+                                        <TextBlock Text=" [" FontSize="14"/>
+                                        <TextBlock Text="{Binding IsPlaying, Converter={StaticResource BoolToStatusConverter}}" FontSize="14"/>
+                                        <TextBlock Text="]" FontSize="14"/>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>

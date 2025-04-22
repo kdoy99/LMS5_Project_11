@@ -4,11 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project_11.View"
+        xmlns:conv="clr-namespace:Project_11.Converters"
         mc:Ignorable="d"
         Title="GameRoom" Height="720" Width="1000">
 
     <Window.Resources>
         <DropShadowEffect x:Key="DropShadowEffect" ShadowDepth="2" BlurRadius="4" Color="Gray"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -39,76 +41,26 @@
                     <Image Source="/View/board.png"
                            Stretch="Fill"
                            Panel.ZIndex="0"/>
-                    
-                    <UniformGrid Rows="8" Columns="8"
-                                 Width="444" Height="444"
-                                 Background="Transparent"
-                                 Panel.ZIndex="1">
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                        <Button Background="Transparent"/>
-                    </UniformGrid>
+
+                    <ItemsControl ItemsSource="{Binding Board}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="8" Columns="8"
+                         Width="444" Height="444"
+                         Background="Transparent"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Background="Transparent"
+                                        Command="{Binding ClickCommand}">
+                                    <Image Source="{Binding StoneImage}"
+                                           Visibility="{Binding IsStoneVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                                           Stretch="Uniform"/>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
             </Viewbox>
         </Grid>
