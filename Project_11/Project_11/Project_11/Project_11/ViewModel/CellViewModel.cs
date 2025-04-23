@@ -21,6 +21,19 @@ namespace Project_11.ViewModel
             {
                 _stone = value;
                 OnPropertyChanged(nameof(Stone));
+                OnPropertyChanged(nameof(StoneImage));
+            }
+        }
+
+        public string StoneImage
+        {
+            get
+            {
+                return Stone switch
+                {
+                    "Black" => "/View/black.png",
+                    "White" => "/View/white.png",
+                };
             }
         }
 

@@ -53,7 +53,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Background="Transparent"
-                                        Command="{Binding ClickCommand}">
+                                        Command="{Binding StoneCommand}">
                                     <Image Source="{Binding StoneImage}"
                                            Visibility="{Binding IsStoneVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                            Stretch="Uniform"/>

@@ -106,11 +106,6 @@ namespace Project_11.ViewModel
             }
         }
 
-        private void OnCellClicked(CellViewModel cell)
-        {
-            GameChat.Add($"[{cell.Row}, {cell.Column}] 셀이 클릭되었습니다.");
-        }
-
         public string CurrentRoomID { get; set; }
         public int Rating { get; set; } // 방장 레이팅
 
@@ -131,6 +126,7 @@ namespace Project_11.ViewModel
                     Board.Add(new CellViewModel(row, col, OnCellClicked));
                 }
             }
+            InitializeBoard();
         }
 
         private async Task ListenAsync()
@@ -208,6 +204,37 @@ namespace Project_11.ViewModel
                 ShowErrorMessage($"게임 서버 연결 실패: {ex.Message}");
             }
         }
+
+        private void InitializeBoard()
+        {
+            Board = new ObservableCollection<CellViewModel>();
+            
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    var cell = new CellViewModel(row, col, OnCellClicked);
+                    Board.Add(cell);
+                }
+            }
+
+            
+        }
+
+        private void SetStone(int row, int col, string color)
+        {
+            var cell = Board.FirstOrDefault(c => c.Row == row && c.Column == col);
+            if (cell != null)
+            {
+                cell.Stone = color;
+            }
+        }
+
+        private void OnCellClicked(CellViewModel cell)
+        {
+            Console.WriteLine($"Clicked: ({cell.Row}, {cell.Column})");
+        }
+
         // 채팅
         private void SendMessage()
         {
